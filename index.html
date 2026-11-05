@@ -46,17 +46,15 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}
 .avatar-lg{width:84px;height:84px}
 .row{display:flex;align-items:center;gap:10px}
 .muted{color:var(--muted);font-size:12px}
-.post-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.post-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer}
 .post-head .t{font-weight:600;font-size:14px}
 .post-media{border-radius:12px;margin:10px 0;max-height:420px;object-fit:cover;width:100%}
 .post-actions{display:flex;gap:16px;padding-top:8px;border-top:1px solid var(--line);margin-top:8px;flex-wrap:wrap}
 .post-actions button{background:transparent;color:var(--muted);font-size:14px;display:flex;align-items:center;gap:5px}
-.post-actions button.liked{color:var(--red2)}
-.post-actions button.saved{color:var(--red2)}
+.post-actions button.liked,.post-actions button.saved{color:var(--red2)}
 .badge{padding:2px 8px;border-radius:999px;font-size:10.5px;font-weight:600}
 .b-red{background:rgba(225,29,46,.15);color:var(--red2)}
 .b-ok{background:rgba(34,197,94,.15);color:var(--ok)}
-.b-warn{background:rgba(245,158,11,.15);color:var(--warn)}
 .stories{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 12px}
 .story-ring{width:62px;height:62px;border-radius:50%;padding:2.5px;background:linear-gradient(135deg,var(--red),#ff7a85);flex-shrink:0;cursor:pointer}
 .story-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2.5px solid var(--bg)}
@@ -72,20 +70,21 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}
 .modal{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;width:100%;max-width:420px;max-height:85vh;overflow:auto}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
 .chat-item{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
-.online-dot{width:10px;height:10px;border-radius:50%;background:var(--ok);border:2px solid var(--card)}
 .chat-header{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--line);padding:10px 14px;display:flex;align-items:center;gap:10px;z-index:20}
+.chat-profile{display:flex;align-items:center;gap:10px;flex:1;cursor:pointer;min-width:0}
 .msgs{padding:14px;display:flex;flex-direction:column;gap:8px;min-height:calc(100vh - 210px)}
-.msg{max-width:75%;padding:9px 13px;border-radius:16px;font-size:14px;word-break:break-word}
+.msg{max-width:75%;padding:9px 13px;border-radius:16px;font-size:14px;word-break:break-word;position:relative}
 .msg.me{align-self:flex-end;background:linear-gradient(135deg,var(--red),#b3121f);border-bottom-right-radius:4px}
 .msg.them{align-self:flex-start;background:var(--card2);border-bottom-left-radius:4px}
 .msg .meta{font-size:9.5px;opacity:.7;margin-top:3px;text-align:right}
-.composer{position:fixed;bottom:0;left:0;right:0;max-width:560px;margin:0 auto;background:var(--card);border-top:1px solid var(--line);padding:10px 12px;display:flex;gap:8px;z-index:30}
-.composer .input{flex:1}
+.composer{position:fixed;bottom:calc(64px + env(safe-area-inset-bottom));left:0;right:0;max-width:560px;margin:0 auto;background:var(--card);border-top:1px solid var(--line);padding:10px 12px;display:flex;gap:8px;z-index:40}
+.composer .input{flex:1;min-width:0}
 .typing{font-size:11px;color:var(--muted);padding:0 14px 6px}
 .call-screen{position:fixed;inset:0;background:#000;z-index:300;display:flex;flex-direction:column}
 .call-video{flex:1;position:relative}
 .call-video video{width:100%;height:100%;object-fit:cover}
-#localVideo{position:absolute;bottom:16px;right:16px;width:110px;border-radius:12px;border:2px solid var(--red)}
+#remoteVideo{position:absolute;inset:0}
+#localVideo{position:absolute;bottom:18px;right:16px;width:110px;height:150px;object-fit:cover;border-radius:12px;border:2px solid var(--red);cursor:pointer;z-index:2}
 .call-controls{display:flex;justify-content:center;gap:22px;padding:22px;background:var(--card)}
 .call-controls button{width:56px;height:56px;border-radius:50%;font-size:20px;background:var(--card2);color:#fff}
 #toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--card2);border:1px solid var(--line);padding:11px 18px;border-radius:12px;font-size:13px;z-index:400;transition:.3s;opacity:0;max-width:90vw}
@@ -95,24 +94,74 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}
 .empty{text-align:center;padding:40px 16px;color:var(--muted)}
 .empty i{font-size:32px;color:var(--line);display:block;margin-bottom:10px}
 .skeleton{height:70px;background:linear-gradient(90deg,var(--card) 25%,var(--card2) 50%,var(--card) 75%);background-size:200% 100%;animation:sk 1.2s infinite;border-radius:12px;margin-bottom:10px}
-@keyframes sk{to{background-position:-200% 0}}/* Chat message box ko bottom navigation ke upar rakho */
-#chatView .composer {
-  bottom: calc(64px + env(safe-area-inset-bottom));
-  z-index: 40;
+@keyframes sk{to{background-position:-200% 0}}
+.filter-bar{display:flex;gap:8px;overflow-x:auto;padding:10px 0}
+.filter-bar button{background:var(--card2);color:var(--text);border:1px solid var(--line);padding:7px 12px;border-radius:999px;font-size:12px;white-space:nowrap}
+.filter-bar button.active{border-color:var(--red);color:var(--red2)}
+.preview-media{width:100%;max-height:320px;object-fit:cover;border-radius:12px;margin-top:10px}
+#storyViewer{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;background:#000;z-index:500;display:flex;flex-direction:column}
+#storyViewer[hidden]{display:none!important}
+.story-full{width:100%;height:100%;position:relative;background:#000;overflow:hidden}
+.story-top{position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;right:12px;display:flex;justify-content:flex-end;z-index:510}
+#storyImg{width:100%;height:100%;object-fit:contain;background:#000}
+.story-caption{position:absolute;bottom:calc(24px + env(safe-area-inset-bottom));left:16px;right:16px;text-align:center;color:#fff;z-index:510}
+.story-close{background:rgba(0,0,0,.55)!important;color:#fff!important;border:1px solid rgba(255,255,255,.25)!important}
+#cameraModal{position:fixed;inset:0;z-index:600;background:#000}
+#cameraModal[hidden]{display:none!important}
+.camera-screen{position:relative;width:100%;height:100%;overflow:hidden}
+#cameraVideo{width:100%;height:100%;object-fit:cover;background:#000}
+.camera-top{position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;right:12px;display:flex;justify-content:flex-end;z-index:10}
+.camera-filters{position:absolute;left:0;right:0;bottom:calc(160px + env(safe-area-inset-bottom));display:flex;gap:8px;overflow-x:auto;padding:10px 12px;z-index:10}
+.filter-btn{flex:0 0 auto;padding:8px 12px;border-radius:999px;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.25);font-size:12px}
+.filter-btn.active{background:#fff;color:#000}
+.camera-bottom{position:absolute;left:0;right:0;bottom:calc(18px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:10}
+.gallery-btn{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.25)}
+.upload-tabs{display:flex;gap:6px;background:rgba(0,0,0,.55);padding:5px;border-radius:999px;border:1px solid rgba(255,255,255,.2)}
+.upload-tab{padding:8px 12px;border-radius:999px;background:transparent;color:#fff;border:none;font-size:13px}
+.upload-tab.active{background:#fff;color:#000}
+.capture-btn{width:70px;height:70px;border-radius:50%;background:#fff;border:5px solid rgba(255,255,255,.35)}
+#sideMenu{position:fixed;inset:0;z-index:450}
+#sideMenu[hidden]{display:none!important}
+.menu-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.6)}
+.menu-panel{position:absolute;top:0;right:0;bottom:0;width:78%;max-width:320px;background:var(--card);border-left:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;gap:6px;animation:slideIn .25s ease}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.menu-head{display:flex;align-items:center;gap:12px;padding:6px 8px 14px;border-bottom:1px solid var(--line);margin-bottom:10px}
+.menu-item{display:flex;align-items:center;gap:12px;width:100%;background:transparent;color:var(--text);padding:13px 12px;border-radius:12px;font-size:14px;text-align:left}
+.menu-item:active{background:var(--card2)}
+.menu-item.danger{color:#ef4444}
+.menu-foot{margin-top:auto;text-align:center;color:var(--muted);font-size:11px;padding-top:12px}
+.req-row{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+.req-row:last-child{border-bottom:none}
+.req-row.pass{color:var(--ok)}
+.req-row.fail{color:var(--muted)}
+.req-progress{padding:10px 0;border-bottom:1px solid var(--line)}
+.req-progress:last-child{border-bottom:none}
+.req-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+.req-top span:last-child{color:var(--muted)}
+.progress-track{width:100%;height:8px;background:var(--card2);border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--red),var(--red2));border-radius:999px;transition:width .4s ease}
+.progress-fill.done{background:var(--ok)}
+#monetizeStatus{font-size:13px;line-height:1.6}
+.status-pending{color:#fbbf24}
+.status-approved{color:var(--ok)}
+.status-rejected{color:#ef4444}
+
+/* Blue verification badge */
+.nx-verified{
+  display:inline-block;
+  width:15px;
+  height:15px;
+  margin-left:4px;
+  vertical-align:-2px;
+  flex-shrink:0;
 }
 
-#chatView .composer .input {
-  min-width: 0;
+.nx-username{
+  display:inline-flex;
+  align-items:center;
+  gap:0;
 }
 
-#chatView .composer #sendBtn {
-  flex-shrink: 0;
-}
-
-/* Last message composer ke peeche na chhupe */
-#chatView .msgs {
-  padding-bottom: calc(160px + env(safe-area-inset-bottom));
-}
 </style>
 </head>
 <body>
@@ -146,6 +195,7 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}
     <div>
       <button class="icon-btn" id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
       <button class="icon-btn" id="notifBtn"><i class="fa-solid fa-bell"></i><span class="dot" id="notifDot" hidden>0</span></button>
+      <button class="icon-btn" id="menuBtn"><i class="fa-solid fa-bars"></i></button>
     </div>
   </div>
 
@@ -161,14 +211,21 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}
       <div class="card">
         <h2 style="font-size:16px;margin-bottom:10px"><i class="fa-solid fa-pen" style="color:var(--red)"></i> Create Post</h2>
         <textarea id="postText" class="input" rows="4" placeholder="Kya share karna hai? #hashtag bhi likh sakte ho"></textarea>
-        <label>Photo Upload (optional)</label>
-        <input id="postImageFile" class="input" type="file" accept="image/*">
-        <label>Video Upload (optional — Reel banega)</label>
-        <input id="postVideoFile" class="input" type="file" accept="video/*">
+        <label>Photo / Video Upload</label>
+        <input id="postMediaFile" class="input" type="file" accept="image/*,video/*">
+        <div id="mediaPreview"></div>
+        <div class="filter-bar" id="postFilters">
+          <button class="active" data-filter="none">Normal</button>
+          <button data-filter="grayscale(1)">B&W</button>
+          <button data-filter="sepia(.7)">Vintage</button>
+          <button data-filter="saturate(1.6)">Vivid</button>
+          <button data-filter="contrast(1.25) brightness(1.05)">Bold</button>
+          <button data-filter="blur(1px)">Soft</button>
+        </div>
         <div id="uploadStatus" class="muted" style="margin-top:8px"></div>
         <label style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--muted);margin:12px 0 0">
           <input type="checkbox" id="policyAgree" style="margin-top:3px">
-          <span>Main confirm karta hoon ki ye post Nexly ke rules ke against nahi hai — koi adult/nudity content, hate speech, violence, ya illegal material nahi hai.</span>
+          <span>Main confirm karta hoon ki ye post Nexly ke rules ke against nahi hai.</span>
         </label>
         <button id="createPostBtn" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Publish</button>
       </div>
@@ -176,7 +233,13 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}
         <h2 style="font-size:16px;margin-bottom:10px"><i class="fa-solid fa-circle-notch" style="color:var(--red)"></i> Add Story</h2>
         <label>Story Photo Upload</label>
         <input id="storyFile" class="input" type="file" accept="image/*">
-        <div id="storyUploadStatus" class="muted" style="margin-top:8px"></div>
+        <div id="storyPreview"></div>
+        <div class="filter-bar" id="storyFilters">
+          <button class="active" data-filter="none">Normal</button>
+          <button data-filter="grayscale(1)">B&W</button>
+          <button data-filter="sepia(.7)">Vintage</button>
+          <button data-filter="contrast(1.25)">Bold</button>
+        </div>
         <label>Caption</label>
         <input id="storyCaption" class="input" placeholder="Optional caption">
         <button id="addStoryBtn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Story</button>
@@ -202,7 +265,6 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}
         <span class="badge b-red" id="myVerified" hidden><i class="fa-solid fa-circle-check"></i> Verified Creator</span>
         <button id="editProfileBtn" class="btn btn-ghost" style="margin-top:14px"><i class="fa-solid fa-pen"></i> Edit Profile</button>
         <button id="savedBtn" class="btn btn-ghost" style="margin-top:8px"><i class="fa-solid fa-bookmark"></i> Saved Posts</button>
-        <button id="logoutBtn" class="btn btn-danger" style="margin-top:8px"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
       </div>
       <h3 style="margin:6px 0 10px">My Posts</h3>
       <div id="myPostsList"><div class="skeleton"></div></div>
@@ -217,12 +279,70 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}
       <div class="card" id="notifList"><div class="skeleton"></div></div>
     </div>
 
+    <div id="page-monetize" class="page" hidden>
+      <div class="card">
+        <h2 style="font-size:16px;margin-bottom:6px"><i class="fa-solid fa-indian-rupee-sign" style="color:var(--red)"></i> Monetization</h2>
+        <p class="muted">Creator banana hai? Pehle eligibility check karo.</p>
+        <div id="monetizeStatus" class="card" style="margin-top:12px;background:var(--card2)"></div>
+        <div class="card" style="background:var(--card2)">
+          <h3 style="font-size:14px;margin-bottom:10px">Eligibility Requirements</h3>
+          <div class="req-row" id="reqAge"><i class="fa-solid fa-circle-xmark"></i> Age 18+</div>
+          <div class="req-progress">
+            <div class="req-top"><span>Followers</span><span id="reqFollowersCount">0 / 1,000</span></div>
+            <div class="progress-track"><div class="progress-fill" id="followersBar"></div></div>
+          </div>
+          <div class="req-progress">
+            <div class="req-top"><span>Views (last 30 days)</span><span id="reqViewsCount">0 / 10,000</span></div>
+            <div class="progress-track"><div class="progress-fill" id="viewsBar"></div></div>
+          </div>
+          <div class="req-row" id="reqTips"><i class="fa-solid fa-circle-xmark"></i> 500+ followers for Tips</div>
+          <div class="req-row" id="reqMember"><i class="fa-solid fa-circle-xmark"></i> ₹99/month Creator Membership</div>
+        </div>
+        <div id="membershipBox" class="card" style="background:var(--card2)">
+          <h3 style="font-size:14px">Nexly Creator Membership</h3>
+          <p class="muted">₹99/month · Monetization access + Creator badge + Priority support</p>
+          <button id="buyMembershipBtn" class="btn btn-primary"><i class="fa-solid fa-crown"></i> Buy Membership – ₹99</button>
+        </div>
+        <div id="monetizeApply" hidden>
+          <label>Payout Method</label>
+          <select id="monetizePayout" class="input">
+            <option value="upi">UPI</option>
+            <option value="bank">Bank Account</option>
+          </select>
+          <label id="upiLabel">UPI ID</label>
+          <input id="monetizeUpi" class="input" placeholder="yourname@upi">
+          <label style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--muted);margin:12px 0 0">
+            <input type="checkbox" id="monetizeAgree" style="margin-top:3px">
+            <span>Main confirm karta hoon ki mera content original hai aur main Nexly Monetization Policy follow karunga.</span>
+          </label>
+          <button id="monetizeApplyBtn" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Apply for Monetization</button>
+        </div>
+        <div id="monetizeDashboard" hidden>
+          <div class="row" style="justify-content:space-between;margin-top:12px">
+            <div><div class="muted">Total Earnings</div><div id="monetizeEarnings" style="font-size:22px;font-weight:700">₹0</div></div>
+            <div style="text-align:right"><div class="muted">Available</div><div id="monetizeAvailable" style="font-size:22px;font-weight:700">₹0</div></div>
+          </div>
+          <button id="payoutBtn" class="btn btn-primary"><i class="fa-solid fa-money-bill-transfer"></i> Request Payout</button>
+          <h3 style="font-size:14px;margin:16px 0 8px">Payout History</h3>
+          <div id="payoutHistory"><div class="muted">No payouts yet.</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:8px">Monetization Policy</h3>
+        <p class="muted" style="line-height:1.7">Monetization sirf 18+ creators ke liye hai jinke paas 1,000+ followers aur last 30 days me 10,000+ views hain. Tips ke liye 500+ followers chahiye. ₹99/month Creator Membership compulsory hai. Content original, legal aur Nexly guidelines ke according hona chahiye.</p>
+      </div>
+    </div>
+
     <div id="chatView" hidden>
       <div class="chat-header">
         <button class="icon-btn" id="chatBack"><i class="fa-solid fa-arrow-left"></i></button>
-        <img id="chatAvatar" class="avatar avatar-sm" alt="">
-        <div style="flex:1"><div id="chatName" style="font-weight:600;font-size:14px"></div>
-        <div class="muted" id="chatStatus" style="font-size:11px"></div></div>
+        <div class="chat-profile" id="chatProfile">
+          <img id="chatAvatar" class="avatar avatar-sm" alt="">
+          <div style="flex:1;min-width:0">
+            <div id="chatName" style="font-weight:600;font-size:14px"></div>
+            <div class="muted" id="chatStatus" style="font-size:11px"></div>
+          </div>
+        </div>
         <button class="icon-btn" id="audioCallBtn"><i class="fa-solid fa-phone"></i></button>
         <button class="icon-btn" id="videoCallBtn"><i class="fa-solid fa-video"></i></button>
       </div>
@@ -238,17 +358,19 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}
   <nav class="bottom-nav">
     <button data-page="home" class="active"><i class="fa-solid fa-house"></i></button>
     <button data-page="reels"><i class="fa-solid fa-film"></i></button>
-    <button data-page="create"><i class="fa-solid fa-plus"></i></button>
+    <button data-page="create" id="createNavBtn"><i class="fa-solid fa-plus"></i></button>
     <button data-page="chats"><i class="fa-solid fa-comment"></i></button>
     <button data-page="profile"><i class="fa-solid fa-user"></i></button>
   </nav>
 </div>
 
-<div id="storyViewer" class="modal-bg" hidden>
-  <div style="width:100%;max-width:400px;position:relative">
-    <img id="storyImg" style="width:100%;border-radius:16px" alt="Story">
-    <p id="storyCaption" style="text-align:center;margin-top:10px"></p>
-    <button class="btn btn-ghost" id="storyClose" style="position:absolute;top:10px;right:10px"><i class="fa-solid fa-xmark"></i></button>
+<div id="storyViewer" hidden>
+  <div class="story-full">
+    <div class="story-top">
+      <button class="btn btn-ghost story-close" id="storyClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <img id="storyImg" alt="Story">
+    <p id="storyCaption" class="story-caption"></p>
   </div>
 </div>
 
@@ -282,7 +404,7 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}
   <div class="call-video">
     <video id="remoteVideo" autoplay playsinline></video>
     <video id="localVideo" autoplay playsinline muted></video>
-    <div style="position:absolute;top:20px;left:0;right:0;text-align:center">
+    <div style="position:absolute;top:20px;left:0;right:0;text-align:center;z-index:2">
       <div id="callName" style="font-family:Poppins;font-size:18px;font-weight:600"></div>
       <div id="callStatus" style="color:var(--muted);font-size:12px;margin-top:4px">Connecting...</div>
     </div>
@@ -305,6 +427,7 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}
     </div>
   </div>
 </div>
+
 <div id="followListModal" class="modal-bg" hidden>
   <div class="modal">
     <h3 id="followListTitle" style="margin-bottom:12px">Followers</h3>
@@ -312,224 +435,261 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}
     <div class="modal-actions"><button class="btn btn-ghost" id="followListClose">Close</button></div>
   </div>
 </div>
+
+<div id="sideMenu" hidden>
+  <div class="menu-backdrop" id="menuBackdrop"></div>
+  <div class="menu-panel">
+    <div class="menu-head">
+      <img id="menuAvatar" class="avatar" alt="">
+      <div>
+        <div id="menuName" style="font-weight:600;font-size:14px"></div>
+        <div class="muted" id="menuUsername"></div>
+      </div>
+    </div>
+    <button class="menu-item" id="menuProfile"><i class="fa-solid fa-user"></i> My Profile</button>
+    <button class="menu-item" id="menuSaved"><i class="fa-solid fa-bookmark"></i> Saved Posts</button>
+    <button class="menu-item" id="menuNotifs"><i class="fa-solid fa-bell"></i> Notifications</button>
+    <button class="menu-item" id="menuEdit"><i class="fa-solid fa-pen"></i> Edit Profile</button>
+    <button class="menu-item" id="menuMonetize"><i class="fa-solid fa-indian-rupee-sign"></i> Monetization</button>
+    <button class="menu-item" id="menuSettings"><i class="fa-solid fa-gear"></i> Settings</button>
+    <button class="menu-item danger" id="menuLogout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+    <div class="menu-foot">Nexly · v1.0</div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
+<div id="cameraModal" hidden>
+  <div class="camera-screen">
+    <video id="cameraVideo" autoplay playsinline muted></video>
+    <div class="camera-top">
+      <button class="btn btn-ghost" id="cameraClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="camera-filters">
+      <button class="filter-btn active" data-filter="none">Normal</button>
+      <button class="filter-btn" data-filter="grayscale(1)">B&W</button>
+      <button class="filter-btn" data-filter="sepia(.8)">Retro</button>
+      <button class="filter-btn" data-filter="saturate(1.8)">Vivid</button>
+      <button class="filter-btn" data-filter="contrast(1.3) brightness(1.1)">Bright</button>
+      <button class="filter-btn" data-filter="hue-rotate(25deg)">Cool</button>
+    </div>
+    <div class="camera-bottom">
+      <button class="gallery-btn" id="galleryOpen"><i class="fa-solid fa-images"></i></button>
+      <div class="upload-tabs">
+        <button class="upload-tab active" data-type="story">Story</button>
+        <button class="upload-tab" data-type="reel">Reel</button>
+        <button class="upload-tab" data-type="post">Post</button>
+      </div>
+      <button class="capture-btn" id="captureBtn"></button>
+    </div>
+    <input type="file" id="galleryInput" accept="image/*,video/*" hidden>
+  </div>
+</div>
+
 <script>
-/* ================= FIREBASE (READY) ================= */
-const firebaseConfig = {
-  apiKey: "AIzaSyD02Wdq0YiONAiXcuht6-CZz5IyOMfEcZY",
-  authDomain: "social-media-62650.firebaseapp.com",
-  databaseURL: "https://social-media-62650-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "social-media-62650",
-  storageBucket: "social-media-62650.firebasestorage.app",
-  messagingSenderId: "16936643031",
-  appId: "1:16936643031:web:e885e2c3f9771bf5c48392"
+const firebaseConfig={
+  apiKey:"AIzaSyD02Wdq0YiONAiXcuht6-CZz5IyOMfEcZY",
+  authDomain:"social-media-62650.firebaseapp.com",
+  databaseURL:"https://social-media-62650-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"social-media-62650",
+  storageBucket:"social-media-62650.firebasestorage.app",
+  messagingSenderId:"16936643031",
+  appId:"1:16936643031:web:e885e2c3f9771bf5c48392"
 };
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.database();
+const auth=firebase.auth(),db=firebase.database();
+const $=id=>document.getElementById(id);function verifiedBadge(isVerified){
+  if(isVerified !== true) return "";
 
-/* ================= CLOUDINARY (READY) ================= */
-const CLOUD_NAME = "fad4lltm";
-const UPLOAD_PRESET = "Creatorhub";
-
-async function uploadToCloudinary(file, resourceType){
-  const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`;
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", UPLOAD_PRESET);
-  const res = await fetch(url, { method: "POST", body: formData });
-  if(!res.ok) throw new Error("Upload failed");
-  const data = await res.json();
-  return data.secure_url;
+  return `
+    <svg
+      class="nx-verified"
+      viewBox="0 0 24 24"
+      role="img"
+      aria-label="Verified account"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fill="#0095F6"
+        d="M12 1.5
+           14.6 3.1 17.65 3.05
+           19.05 5.75 21.65 7.35
+           21.4 10.4 22.5 13.25
+           20.65 15.65 20 18.65
+           17.05 19.45 14.7 21.4
+           12 20.65 9.3 21.4
+           6.95 19.45 4 18.65
+           3.35 15.65 1.5 13.25
+           2.6 10.4 2.35 7.35
+           4.95 5.75 6.35 3.05
+           9.4 3.1 Z"
+      />
+      <path
+        d="m7.4 11.9 3 3 6.2-6.1"
+        fill="none"
+        stroke="#FFFFFF"
+        stroke-width="2.3"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  `;
 }
+const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let myId="",me={},activeChat="",activePost="",selectedFilter="none",storyFilter="none";
+let localStream=null,remoteStream=null,pc=null,currentCallId="",callPartner="";
+let creatorMembership=false,cameraStream=null,cameraFilter="none",uploadType="story";
 
-/* ================= STATE / UTILS ================= */
-let me = null, myId = null, activeChat = null, activePost = null;
-let currentCall = null, localStream = null, pc = null;
-const $ = id => document.getElementById(id);
-let toastTimer;
-function toast(m,t=""){const el=$("toast");el.textContent=m;el.className="show "+t;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.className="",3000);}
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function timeAgo(ts){if(!ts)return"";const m=Math.floor((Date.now()-ts)/60000);if(m<1)return"now";if(m<60)return m+"m";const h=Math.floor(m/60);if(h<24)return h+"h";return new Date(ts).toLocaleDateString();}
-function convId(a,b){return [a,b].sort().join("__");}
-function friendlyError(e){const c=e?.code||"";if(c.includes("email-already"))return"Ye email already registered hai.";if(c.includes("invalid-email"))return"Email format galat hai.";if(c.includes("weak-password"))return"Password kam se kam 6 characters ka hona chahiye.";if(c.includes("invalid-credential")||c.includes("wrong-password"))return"Galat email ya password.";if(c.includes("user-not-found"))return"Ye email registered nahi hai.";if(c.includes("network"))return"Network error. Internet check karein.";if(c.includes("permission"))return"Permission denied. Rules check karein.";return e?.message||"Kuch galat ho gaya.";}
-function extractHashtags(text){return (text.match(/#[\w]+/g)||[]).map(t=>t.slice(1).toLowerCase());}
-
-/* ================= MODERATION ================= */
-const bannedWords=["porn","sex","nude","nudes","naked","xxx","adult","hentai","onlyfans","18+","boobs","dick","pussy","fuck","horny","erotic","sexy video","blue film"];
-function checkContent(text,url){
-  const lower=(text+" "+url).toLowerCase();
-  return bannedWords.find(w=>lower.includes(w))||null;
-}
-
-/* ================= AUTH ================= */
-auth.onAuthStateChanged(async user=>{
-  if(!user){$("authView").hidden=false;$("appView").hidden=true;return;}
-  myId=user.uid;
-  const snap=await db.ref("users/"+myId).get();
-  me=snap.exists()?snap.val():null;
-  if(!me){
-    me={uid:myId,username:"user"+myId.slice(0,6),displayName:user.email.split("@")[0],email:user.email,profileImage:"",bio:"",followersCount:0,followingCount:0,postsCount:0,isVerified:false,isCreator:false,isBlocked:false,createdAt:Date.now()};
-    await db.ref("users/"+myId).set(me);
-    await db.ref("usernames/"+me.username).set(myId);
-  }
-  if(me.isBlocked){toast("Aapka account block hai.","err");await auth.signOut();return;}
-  $("authView").hidden=true;$("appView").hidden=false;
-  setupPresence();loadFeed();loadStories();loadMyProfile();listenNotifications();listenIncomingCalls();
-});
+function toast(msg,type=""){const t=$("toast");t.textContent=msg;t.className="show "+type;setTimeout(()=>t.className="",2600);}
+function friendlyError(e){return e?.code==="PERMISSION_DENIED"?"Permission denied. Firebase Rules check karo.":(e?.message||"Something went wrong.");}
+function timeAgo(t){if(!t)return"";const s=Math.floor((Date.now()-t)/1000);if(s<60)return"now";if(s<3600)return Math.floor(s/60)+"m";if(s<86400)return Math.floor(s/3600)+"h";return Math.floor(s/86400)+"d";}
+function chatId(a,b){return [a,b].sort().join("_");}
 
 $("showRegister").onclick=e=>{e.preventDefault();$("loginForm").hidden=true;$("registerForm").hidden=false;};
 $("showLogin").onclick=e=>{e.preventDefault();$("registerForm").hidden=true;$("loginForm").hidden=false;};
 
 $("registerBtn").onclick=async()=>{
-  const name=$("regName").value.trim(),un=$("regUsername").value.trim().toLowerCase(),em=$("regEmail").value.trim(),pw=$("regPass").value;
-  const err=$("regErr");err.style.display="none";
-  if(!name||!un||!em||!pw){err.textContent="Sab fields bharein.";err.style.display="block";return;}
-  if(!/^[a-zA-Z0-9_]{3,24}$/.test(un)){err.textContent="Username: 3-24 letters/numbers/underscore.";err.style.display="block";return;}
-  if(pw.length<6){err.textContent="Password kam se kam 6 characters.";err.style.display="block";return;}
-  $("registerBtn").disabled=true;
+  const name=$("regName").value.trim(),username=$("regUsername").value.trim().toLowerCase(),email=$("regEmail").value.trim(),pass=$("regPass").value;
+  if(!name||!username||!email||pass.length<6)return toast("Saari details sahi bharo.","err");
   try{
-    const unSnap=await db.ref("usernames/"+un).get();
-    if(unSnap.exists())throw{code:"username-taken"};
-    const cred=await auth.createUserWithEmailAndPassword(em,pw);
-    const u={uid:cred.user.uid,username:un,displayName:name,email:em,profileImage:"",bio:"",followersCount:0,followingCount:0,postsCount:0,isVerified:false,isCreator:false,isBlocked:false,createdAt:Date.now()};
-    await db.ref("users/"+cred.user.uid).set(u);
-    await db.ref("usernames/"+un).set(cred.user.uid);
-  }catch(e){
-    err.textContent=e.code==="username-taken"?"Ye username already taken hai.":friendlyError(e);
-    err.style.display="block";
-  }
-  $("registerBtn").disabled=false;
+    const cred=await auth.createUserWithEmailAndPassword(email,pass);
+    await db.ref("users/"+cred.user.uid).set({uid:cred.user.uid,displayName:name,username,email,profileImage:"",bio:"",postsCount:0,followersCount:0,followingCount:0,isVerified:false,createdAt:Date.now()});
+  }catch(e){$("regErr").textContent=friendlyError(e);$("regErr").style.display="block";}
 };
 $("loginBtn").onclick=async()=>{
-  const err=$("loginErr");err.style.display="none";$("loginBtn").disabled=true;
   try{await auth.signInWithEmailAndPassword($("loginEmail").value.trim(),$("loginPass").value);}
-  catch(e){err.textContent=friendlyError(e);err.style.display="block";}
-  $("loginBtn").disabled=false;
+  catch(e){$("loginErr").textContent=friendlyError(e);$("loginErr").style.display="block";}
 };
-$("logoutBtn").onclick=async()=>{await db.ref("presence/"+myId).update({online:false,lastSeen:Date.now()});await auth.signOut();};
 
-/* ================= PRESENCE ================= */
-function setupPresence(){
-  const ref=db.ref("presence/"+myId);
-  const conn=db.ref(".info/connected");
-  conn.on("value",s=>{
-    if(s.val()){
-      ref.onDisconnect().update({online:false,lastSeen:firebase.database.ServerValue.TIMESTAMP});
-      ref.update({online:true,lastSeen:firebase.database.ServerValue.TIMESTAMP});
-    }
-  });
+auth.onAuthStateChanged(async user=>{
+  if(!user){$("authView").hidden=false;$("appView").hidden=true;return;}
+  myId=user.uid;
+  const s=await db.ref("users/"+myId).get();
+  me=s.exists()?s.val():{};
+  $("authView").hidden=true;$("appView").hidden=false;
+  loadMyProfile();loadFeed();loadStories();loadChats();listenNotifications();
+});
+
+function showPage(page){
+  document.querySelectorAll(".bottom-nav button").forEach(x=>x.classList.remove("active"));
+  document.querySelector(`[data-page="${page}"]`)?.classList.add("active");
+  ["home","reels","create","chats","profile","search","notifs","monetize"].forEach(x=>{const el=$("page-"+x);if(el)el.hidden=true;});
+  $("page-"+page).hidden=false;
+  if(page==="home")loadFeed();
+  if(page==="reels")loadReels();
+  if(page==="chats")loadChats();
+  if(page==="profile")loadMyProfile();
+  if(page==="monetize")loadMonetization();
+}
+document.querySelectorAll(".bottom-nav button").forEach(b=>{
+  if(b.id==="createNavBtn")return;
+  b.onclick=()=>showPage(b.dataset.page);
+});
+$("searchBtn").onclick=()=>showPage("search");
+$("notifBtn").onclick=()=>showPage("notifs");
+
+function loadMyProfile(){
+  $("myAvatar").src=me.profileImage||`https://ui-avatars.com/api/?background=e11d2e&color=fff&name=${encodeURIComponent(me.displayName||"U")}`;
+  $("myName").textContent=me.displayName||"User";
+  $("myUsername").innerHTML=
+  `<span class="nx-username">
+    @${esc(me.username||"")}${verifiedBadge(me.isVerified)}
+  </span>`;
+  $("myBio").textContent=me.bio||"No bio yet";
+  $("myPosts").textContent=me.postsCount||0;
+  $("myFollowers").textContent=me.followersCount||0;
+  $("myFollowing").textContent=me.followingCount||0;
+  $("myVerified").hidden=true;
+  loadMyPosts();
+}
+async function loadMyPosts(){
+  try{
+    const s=await db.ref("posts").orderByChild("authorId").equalTo(myId).get();
+    const posts=s.exists()?Object.entries(s.val()).filter(([,p])=>!p.status||p.status==="published").sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0)):[];
+    $("myPostsList").innerHTML=posts.length?posts.map(([id,p])=>`<div class="card"><div style="font-size:13.5px">${esc((p.text||"(media)").slice(0,120))}</div>${p.mediaType==="image"&&p.mediaUrl?`<img src="${esc(p.mediaUrl)}" style="width:100%;border-radius:10px;margin-top:8px;max-height:250px;object-fit:cover">`:""}${p.mediaType==="video"&&p.mediaUrl?`<video src="${esc(p.mediaUrl)}" controls style="width:100%;border-radius:10px;margin-top:8px;max-height:250px"></video>`:""}<div class="muted" style="margin-top:6px">${p.likesCount||0} likes · ${p.commentsCount||0} comments</div></div>`).join(""):'<div class="empty"><i class="fa-solid fa-newspaper"></i>No posts yet</div>';
+  }catch(e){$("myPostsList").innerHTML=`<div class="empty">${esc(friendlyError(e))}</div>`;}
 }
 
-/* ================= NAV ================= */
-document.querySelectorAll(".bottom-nav button").forEach(b=>{
-  b.onclick=()=>{
-    document.querySelectorAll(".bottom-nav button").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");
-    const p=b.dataset.page;
-    ["home","reels","create","chats","profile","search","notifs"].forEach(x=>$("page-"+x).hidden=true);
-    $("page-"+p).hidden=false;
-    if(p==="home"){loadFeed();loadStories();}
-    if(p==="reels")loadReels();
-    if(p==="chats")loadChatUsers();
-    if(p==="profile")loadMyProfile();
-    if(p==="notifs")loadNotifications();
-  };
-});
-$("searchBtn").onclick=()=>{document.querySelectorAll(".bottom-nav button").forEach(x=>x.classList.remove("active"));["home","reels","create","chats","profile","notifs"].forEach(x=>$("page-"+x).hidden=true);$("page-search").hidden=false;};
-$("notifBtn").onclick=()=>{document.querySelectorAll(".bottom-nav button").forEach(x=>x.classList.remove("active"));["home","reels","create","chats","profile","search"].forEach(x=>$("page-"+x).hidden=true);$("page-notifs").hidden=false;loadNotifications();};
-
-/* ================= FEED (sirf approved posts) ================= */
 async function loadFeed(){
   $("feed").innerHTML='<div class="skeleton"></div>';
   try{
     const s=await db.ref("posts").limitToLast(50).get();
     const posts=s.exists()?Object.entries(s.val()).filter(([,p])=>!p.status||p.status==="published").sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0)):[];
-    if(!posts.length){$("feed").innerHTML='<div class="empty"><i class="fa-solid fa-newspaper"></i>No posts yet. Pehla post banao!</div>';return;}
+    if(!posts.length){$("feed").innerHTML='<div class="empty"><i class="fa-solid fa-newspaper"></i>No posts yet</div>';return;}
     $("feed").innerHTML="";
     for(const[id,p]of posts){
-      const uSnap=await db.ref("users/"+p.authorId).get();
-      const u=uSnap.exists()?uSnap.val():{displayName:"Unknown",username:"unknown",profileImage:""};
-      const likeSnap=await db.ref("likes/"+id+"/"+myId).get();
-      const saveSnap=await db.ref("savedPosts/"+myId+"/"+id).get();
-      $("feed").insertAdjacentHTML("beforeend",renderPost(id,p,u,likeSnap.exists(),saveSnap.exists()));
+      const u=(await db.ref("users/"+p.authorId).get()).val()||{displayName:"Unknown",username:"unknown",profileImage:""};
+      const liked=(await db.ref("likes/"+id+"/"+myId).get()).exists();
+      const saved=(await db.ref("savedPosts/"+myId+"/"+id).get()).exists();
+      $("feed").insertAdjacentHTML("beforeend",renderPost(id,p,u,liked,saved));
     }
-  }catch(e){$("feed").innerHTML=`<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i>${esc(friendlyError(e))}</div>`;}
+  }catch(e){$("feed").innerHTML=`<div class="empty">${esc(friendlyError(e))}</div>`;}
 }
 function renderPost(id,p,u,liked,saved){
-  const verified=u.isVerified?'<i class="fa-solid fa-circle-check" style="color:var(--red2);font-size:11px"></i>':'';
+  const verified=verifiedBadge(u.isVerified);
   let media="";
-  if(p.mediaType==="image"&&p.mediaUrl)media=`<img class="post-media" src="${esc(p.mediaUrl)}" alt="post" onerror="this.style.display='none'">`;
-  if(p.mediaType==="video"&&p.mediaUrl)media=`<video class="post-media" src="${esc(p.mediaUrl)}" controls playsinline></video>`;
-  return`<div class="card" data-post="${esc(id)}">
-    <div class="post-head">
-      <img class="avatar" src="${esc(u.profileImage||'https://ui-avatars.com/api/?background=e11d2e&color=fff&name='+encodeURIComponent(u.displayName||'U'))}" alt="">
-      <div style="flex:1"><div class="t">${esc(u.displayName||"User")} ${verified}</div><div class="muted">@${esc(u.username||"")} · ${timeAgo(p.createdAt)}</div></div>
+  if(p.mediaType==="image"&&p.mediaUrl)media=`<img class="post-media" src="${esc(p.mediaUrl)}" style="filter:${esc(p.filter||"none")}" alt="">`;
+  if(p.mediaType==="video"&&p.mediaUrl)media=`<video class="post-media" src="${esc(p.mediaUrl)}" controls playsinline style="filter:${esc(p.filter||"none")}"></video>`;
+  return`<div class="card">
+    <div class="post-head" onclick="openProfile('${esc(p.authorId)}')">
+      <img class="avatar" src="${esc(u.profileImage||`https://ui-avatars.com/api/?background=e11d2e&color=fff&name=${encodeURIComponent(u.displayName||"U")}`)}" alt="">
+      <div style="flex:1">
+  <div class="t">
+    <span class="nx-username">
+      @${esc(u.username||"user")}${verified}
+    </span>
+  </div>
+
+  <div class="muted">
+    ${esc(u.displayName||"User")} · ${timeAgo(p.createdAt)}
+  </div>
+</div>
     </div>
-    <div style="font-size:14px;line-height:1.6">${esc(p.text||"").replace(/#(\w+)/g,'<span style="color:var(--red2)">#$1</span>')}</div>
-    ${media}
+    <div style="font-size:14px;line-height:1.6">${esc(p.text||"").replace(/#(\w+)/g,'<span style="color:var(--red2)">#$1</span>')}</div>${media}
     <div class="post-actions">
-      <button class="${liked?'liked':''}" onclick="toggleLike('${esc(id)}')"><i class="fa-${liked?'solid':'regular'} fa-heart"></i> <span id="lc-${esc(id)}">${p.likesCount||0}</span></button>
-      <button onclick="openComments('${esc(id)}')"><i class="fa-regular fa-comment"></i> <span id="cc-${esc(id)}">${p.commentsCount||0}</span></button>
+      <button class="${liked?"liked":""}" onclick="toggleLike('${esc(id)}')"><i class="fa-${liked?"solid":"regular"} fa-heart"></i> <span id="lc-${esc(id)}">${p.likesCount||0}</span></button>
+      <button onclick="openComments('${esc(id)}')"><i class="fa-regular fa-comment"></i> ${p.commentsCount||0}</button>
       <button onclick="sharePost('${esc(id)}')"><i class="fa-solid fa-share"></i></button>
-      <button class="${saved?'saved':''}" onclick="toggleSave('${esc(id)}')"><i class="fa-${saved?'solid':'regular'} fa-bookmark"></i></button>
+      <button class="${saved?"saved":""}" onclick="toggleSave('${esc(id)}')"><i class="fa-${saved?"solid":"regular"} fa-bookmark"></i></button>
       <button onclick="reportPost('${esc(id)}')"><i class="fa-regular fa-flag"></i></button>
     </div></div>`;
 }
 window.toggleLike=async id=>{
-  const ref=db.ref("likes/"+id+"/"+myId);
-  const s=await ref.get();
-  if(s.exists()){await ref.remove();await db.ref("posts/"+id+"/likesCount").transaction(n=>Math.max(0,(n||1)-1));}
-  else{await ref.set(true);await db.ref("posts/"+id+"/likesCount").transaction(n=>(n||0)+1);
-    const p=await db.ref("posts/"+id).get();const aid=p.val()?.authorId;
-    if(aid&&aid!==myId)await db.ref("notifications/"+aid+"/"+db.ref().push().key).set({type:"like",senderId:myId,referenceId:id,message:(me.displayName||"Someone")+" liked your post",read:false,createdAt:Date.now()});}
+  const ref=db.ref("likes/"+id+"/"+myId),exists=(await ref.get()).exists();
+  if(exists){await ref.remove();await db.ref("posts/"+id+"/likesCount").transaction(n=>Math.max(0,(n||1)-1));}
+  else{await ref.set(true);await db.ref("posts/"+id+"/likesCount").transaction(n=>(n||0)+1);}
   loadFeed();
 };
 window.toggleSave=async id=>{
-  const ref=db.ref("savedPosts/"+myId+"/"+id);const s=await ref.get();
-  if(s.exists()){await ref.remove();toast("Removed from saved.");}else{await ref.set(true);toast("Post saved.","ok");}
+  const ref=db.ref("savedPosts/"+myId+"/"+id),exists=(await ref.get()).exists();
+  if(exists){await ref.remove();toast("Removed from saved.");}else{await ref.set(true);toast("Post saved.","ok");}
   loadFeed();
 };
 window.sharePost=async id=>{
   const url=location.href.split("#")[0]+"#post="+id;
-  if(navigator.share){try{await navigator.share({title:"Nexly",text:"Check this post",url});}catch{}}
+  if(navigator.share){try{await navigator.share({title:"Nexly",url});}catch{}}
   else{try{await navigator.clipboard.writeText(url);toast("Link copied!","ok");}catch{toast("Copy not supported.","err");}}
 };
 window.reportPost=async id=>{
-  const reason=prompt("Report reason (adult content, spam, abuse, other):");
+  const reason=prompt("Report reason:");
   if(!reason)return;
-  try{
-    await db.ref("reports/"+db.ref().push().key).set({
-      reporterId:myId,targetId:id,targetType:"post",
-      reason:reason,description:"",status:"pending",createdAt:Date.now()
-    });
-    toast("Report submit ho gaya. Admin review karega.","ok");
-  }catch(e){toast(friendlyError(e),"err");}
+  await db.ref("reports/"+db.ref().push().key).set({reporterId:myId,targetId:id,targetType:"post",reason,status:"pending",createdAt:Date.now()});
+  toast("Report submitted.","ok");
 };
 window.openComments=async id=>{
   activePost=id;$("commentsModal").hidden=false;$("commentsList").innerHTML='<div class="skeleton"></div>';
   const s=await db.ref("comments/"+id).get();
   const all=s.exists()?Object.entries(s.val()).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0)):[];
-  $("commentsList").innerHTML=all.length?all.map(([cid,c])=>`<div class="row" style="padding:8px 0">
-    <img class="avatar avatar-sm" src="${esc(c.authorImage||'https://ui-avatars.com/api/?background=1d1d20&color=fff&name=U')}" alt="">
-    <div style="flex:1"><div style="font-size:13px;font-weight:600">${esc(c.authorName||"User")}</div><div style="font-size:13px">${esc(c.text)}</div></div>
-    ${c.authorId===myId?`<button class="btn btn-sm btn-danger" onclick="delComment('${esc(id)}','${esc(cid)}')"><i class="fa-solid fa-trash"></i></button>`:''}
-  </div>`).join(""):'<div class="empty"><i class="fa-regular fa-comment"></i>No comments yet</div>';
+  $("commentsList").innerHTML=all.length?all.map(([cid,c])=>`<div class="row" style="padding:8px 0"><img class="avatar avatar-sm" src="${esc(c.authorImage||"")}" alt=""><div style="flex:1"><div style="font-size:13px;font-weight:600">${esc(c.authorName||"User")}</div><div style="font-size:13px">${esc(c.text)}</div></div>${c.authorId===myId?`<button class="btn btn-sm btn-danger" onclick="delComment('${esc(id)}','${esc(cid)}')"><i class="fa-solid fa-trash"></i></button>`:""}</div>`).join(""):'<div class="empty">No comments yet</div>';
 };
 $("commentsClose").onclick=()=>$("commentsModal").hidden=true;
 $("commentSend").onclick=async()=>{
   const text=$("commentInput").value.trim();
   if(!text||!activePost)return toast("Comment likho.","err");
-  const flagged=checkContent(text,"");
-  if(flagged)return toast("Comment me adult/spam word hai. Dobara likho.","err");
-  try{
-    await db.ref("comments/"+activePost+"/"+db.ref().push().key).set({commentId:db.ref().push().key,authorId:myId,authorName:me.displayName,authorImage:me.profileImage,text,createdAt:Date.now()});
-    await db.ref("posts/"+activePost+"/commentsCount").transaction(n=>(n||0)+1);
-    const p=await db.ref("posts/"+activePost).get();const aid=p.val()?.authorId;
-    if(aid&&aid!==myId)await db.ref("notifications/"+aid+"/"+db.ref().push().key).set({type:"comment",senderId:myId,referenceId:activePost,message:(me.displayName||"Someone")+" commented on your post",read:false,createdAt:Date.now()});
-    $("commentInput").value="";openComments(activePost);loadFeed();
-  }catch(e){toast(friendlyError(e),"err");}
+  const cid=db.ref().push().key;
+  await db.ref("comments/"+activePost+"/"+cid).set({authorId:myId,authorName:me.displayName,authorImage:me.profileImage,text,createdAt:Date.now()});
+  await db.ref("posts/"+activePost+"/commentsCount").transaction(n=>(n||0)+1);
+  $("commentInput").value="";openComments(activePost);loadFeed();
 };
 window.delComment=async(pid,cid)=>{
   await db.ref("comments/"+pid+"/"+cid).remove();
@@ -537,455 +697,126 @@ window.delComment=async(pid,cid)=>{
   openComments(pid);loadFeed();
 };
 
-/* ================= STORIES (direct upload) ================= */
-async function loadStories(){
-  $("storiesRow").innerHTML="";
-  const s=await db.ref("stories").get();
-  const all=s.exists()?Object.entries(s.val()).filter(([id,st])=>st.expiresAt>Date.now()):[];
-  if(!all.length){$("storiesRow").innerHTML='<div class="muted" style="padding:8px">No active stories</div>';return;}
-  for(const[id,st]of all){
-    $("storiesRow").insertAdjacentHTML("beforeend",`<div class="story-ring" onclick="viewStory('${esc(id)}')">
-      <img src="${esc(st.mediaUrl)}" alt="story"></div>`);
-  }
-}
-window.viewStory=async id=>{
-  const s=await db.ref("stories/"+id).get();if(!s.exists())return;
-  const st=s.val();
-  $("storyImg").src=st.mediaUrl;$("storyCaption").textContent=st.caption||"";
-  $("storyViewer").hidden=false;
-  await db.ref("stories/"+id+"/views").transaction(n=>(n||0)+1);
-};
-$("storyClose").onclick=()=>$("storyViewer").hidden=true;
-$("addStoryBtn").onclick=async()=>{
-  const storyFile=$("storyFile").files[0];
-  if(!storyFile)return toast("Photo choose karo.","err");
-  $("storyUploadStatus").textContent="Uploading...";
-  try{
-    const url=await uploadToCloudinary(storyFile,"image");
-    const flagged=checkContent($("storyCaption").value.trim(),url);
-    if(flagged){$("storyUploadStatus").textContent="";return toast("Story me adult content detect hua. Allowed nahi.","err");}
-    await db.ref("stories/"+db.ref().push().key).set({userId:myId,mediaUrl:url,caption:$("storyCaption").value.trim(),createdAt:Date.now(),expiresAt:Date.now()+24*60*60*1000,views:0});
-    $("storyFile").value="";$("storyCaption").value="";$("storyUploadStatus").textContent="";
-    toast("Story added!","ok");loadStories();
-  }catch(e){$("storyUploadStatus").textContent="";toast("Upload failed. Dobara try karo.","err");}
-};
-
-/* ================= CREATE POST (direct upload + moderation) ================= */
-$("createPostBtn").onclick=async()=>{
-  const text=$("postText").value.trim();
-  const imgFile=$("postImageFile").files[0];
-  const vidFile=$("postVideoFile").files[0];
-  if(!text&&!imgFile&&!vidFile)return toast("Kuch likho ya photo/video choose karo.","err");
-  if(!$("policyAgree").checked)return toast("Pehle content policy accept karo.","err");
-  $("createPostBtn").disabled=true;
-  $("uploadStatus").textContent="Uploading...";
-  let img="",vid="";
-  try{
-    if(imgFile){
-      img=await uploadToCloudinary(imgFile,"image");
-      $("uploadStatus").textContent="Photo uploaded!";
-    }
-    if(vidFile){
-      vid=await uploadToCloudinary(vidFile,"video");
-      $("uploadStatus").textContent="Video uploaded!";
-    }
-  }catch(e){
-    $("createPostBtn").disabled=false;$("uploadStatus").textContent="";
-    return toast("Upload failed. Dobara try karo.","err");
-  }
-  const flagged=checkContent(text,img||vid);
-  const postStatus=flagged?"pending_review":"published";
-  try{
-    const type=vid?"video":(img?"image":"text");
-    const ref=db.ref("posts").push();
-    await ref.set({postId:ref.key,authorId:myId,authorName:me.displayName,text,mediaType:type,mediaUrl:vid||img||"",hashtags:extractHashtags(text),likesCount:0,commentsCount:0,sharesCount:0,viewsCount:0,isFeatured:false,createdAt:Date.now(),status:postStatus});
-    (extractHashtags(text)).forEach(tag=>db.ref("hashtags/"+tag+"/"+ref.key).set(true));
-    await db.ref("users/"+myId+"/postsCount").transaction(n=>(n||0)+1);
-    if(flagged){
-      await db.ref("reports/"+db.ref().push().key).set({
-        reporterId:myId,targetId:ref.key,targetType:"post",
-        reason:"Auto-flagged: possible adult content",
-        description:"Keyword detected: "+flagged,
-        status:"pending",createdAt:Date.now()
-      });
-      toast("Post review ke liye gaya. Admin approve karega.","ok");
-    }else{
-      toast("Post published!","ok");
-    }
-    $("postText").value="";$("postImageFile").value="";$("postVideoFile").value="";$("policyAgree").checked=false;
-    $("uploadStatus").textContent="";
-    document.querySelector('[data-page="home"]').click();
-  }catch(e){toast(friendlyError(e),"err");}
-  $("createPostBtn").disabled=false;
-};
-
-/* ================= REELS ================= */
 async function loadReels(){
   $("reelsFeed").innerHTML='<div class="skeleton"></div>';
   const s=await db.ref("posts").limitToLast(30).get();
   const vids=s.exists()?Object.entries(s.val()).filter(([,p])=>p.mediaType==="video"&&(!p.status||p.status==="published")).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0)):[];
-  if(!vids.length){$("reelsFeed").innerHTML='<div class="empty"><i class="fa-solid fa-film"></i>No reels yet. Video upload karo!</div>';return;}
+  if(!vids.length){$("reelsFeed").innerHTML='<div class="empty">No reels yet</div>';return;}
   $("reelsFeed").innerHTML="";
   for(const[id,p]of vids){
-    const u=await db.ref("users/"+p.authorId).get();
-    const un=u.exists()?u.val():{displayName:"U",username:"u",profileImage:""};
-    const likeSnap=await db.ref("likes/"+id+"/"+myId).get();
-    $("reelsFeed").insertAdjacentHTML("beforeend",`<div class="reel">
-      <video src="${esc(p.mediaUrl)}" loop playsinline onclick="this.paused?this.play():this.pause()"></video>
-      <div class="reel-overlay">
-        <div><div style="font-weight:600;font-size:14px;cursor:pointer" onclick="openProfile('${esc(un.uid||p.authorId)}')">@${esc(un.username||"")}</div>
-        <div style="font-size:12px;margin-top:4px;max-width:220px">${esc(p.text||"")}</div></div>
-        <div class="reel-side">
-          <button onclick="toggleLike('${esc(id)}')"><i class="fa-${likeSnap.exists()?'solid':'regular'} fa-heart" style="color:${likeSnap.exists()?'var(--red2)':'#fff'}"></i><div style="font-size:11px">${p.likesCount||0}</div></button>
-          <button onclick="openComments('${esc(id)}')"><i class="fa-regular fa-comment"></i><div style="font-size:11px">${p.commentsCount||0}</div></button>
-          <button onclick="sharePost('${esc(id)}')"><i class="fa-solid fa-share"></i></button>
-          <button onclick="reportPost('${esc(id)}')"><i class="fa-regular fa-flag" style="color:#fff"></i></button>
-        </div></div></div>`);
+    const u=(await db.ref("users/"+p.authorId).get()).val()||{displayName:"U",username:"u",profileImage:""};
+    const liked=(await db.ref("likes/"+id+"/"+myId).get()).exists();
+    $("reelsFeed").insertAdjacentHTML("beforeend",`<div class="reel"><video src="${esc(p.mediaUrl)}" loop playsinline style="filter:${esc(p.filter||"none")}" onclick="this.paused?this.play():this.pause()"></video><div class="reel-overlay"><div><div style="font-weight:600;font-size:14px;cursor:pointer" onclick="openProfile('${esc(p.authorId)}')">@${esc(u.username||"")}</div><div style="font-size:12px;margin-top:4px;max-width:220px">${esc(p.text||"")}</div></div><div class="reel-side"><button onclick="toggleLike('${esc(id)}')"><i class="fa-${liked?"solid":"regular"} fa-heart"></i><div style="font-size:11px">${p.likesCount||0}</div></button><button onclick="openComments('${esc(id)}')"><i class="fa-regular fa-comment"></i><div style="font-size:11px">${p.commentsCount||0}</div></button><button onclick="sharePost('${esc(id)}')"><i class="fa-solid fa-share"></i></button></div></div></div>`);
   }
-  document.querySelectorAll(".reel video").forEach(v=>{
-    new IntersectionObserver(es=>es.forEach(e=>{e.isIntersecting?v.play().catch(()=>{}):v.pause();}),{threshold:.6}).observe(v);
-  });
+  document.querySelectorAll(".reel video").forEach(v=>new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?v.play().catch(()=>{}):v.pause()),{threshold:.6}).observe(v));
 }
 
-/* ================= SEARCH ================= */
+async function loadStories(){
+  const s=await db.ref("stories").limitToLast(30).get();
+  const stories=s.exists()?Object.entries(s.val()).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0)):[];
+  $("storiesRow").innerHTML=stories.length?stories.map(([id,st])=>`<div class="story-ring" onclick="viewStory('${esc(id)}')"><img src="${esc(st.mediaUrl)}" alt=""></div>`).join(""):'<div class="empty" style="padding:10px">No stories</div>';
+}
+window.viewStory=id=>{
+  db.ref("stories/"+id).get().then(s=>{
+    if(!s.exists())return;const st=s.val();
+    $("storyImg").src=st.mediaUrl;$("storyImg").style.filter=st.filter||"none";$("storyCaption").textContent=st.caption||"";$("storyViewer").hidden=false;
+  });
+};
+$("storyClose").onclick=()=>$("storyViewer").hidden=true;
+
+$("postMediaFile").onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const url=URL.createObjectURL(f);
+  $("mediaPreview").innerHTML=f.type.startsWith("video")?`<video class="preview-media" src="${url}" controls style="filter:${selectedFilter}"></video>`:`<img class="preview-media" src="${url}" style="filter:${selectedFilter}">`;
+};
+$("storyFile").onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  $("storyPreview").innerHTML=`<img class="preview-media" src="${URL.createObjectURL(f)}" style="filter:${storyFilter}">`;
+};
+function bindFilters(containerId,setter,previewId){
+  $(containerId).onclick=e=>{
+    const b=e.target.closest("button");if(!b)return;
+    [...$(containerId).children].forEach(x=>x.classList.remove("active"));b.classList.add("active");
+    setter(b.dataset.filter);
+    const media=$(previewId)?.querySelector("img,video");if(media)media.style.filter=b.dataset.filter;
+  };
+}
+bindFilters("postFilters",v=>selectedFilter=v,"mediaPreview");
+bindFilters("storyFilters",v=>storyFilter=v,"storyPreview");
+
+$("createPostBtn").onclick=async()=>{
+  const text=$("postText").value.trim(),file=$("postMediaFile").files[0];
+  if(!text&&!file)return toast("Kuch likho ya media select karo.","err");
+  if(!$("policyAgree").checked)return toast("Policy confirm karo.","err");
+  $("uploadStatus").textContent="Uploading...";
+  try{
+    let mediaUrl="",mediaType="";
+    if(file){
+      mediaType=file.type.startsWith("video")?"video":"image";
+      const path=`posts/${myId}/${Date.now()}_${file.name}`;
+      const snap=await firebase.storage().ref(path).put(file);
+      mediaUrl=await snap.ref.getDownloadURL();
+    }
+    const id=db.ref().push().key;
+    await db.ref("posts/"+id).set({authorId:myId,authorName:me.displayName,text,mediaUrl,mediaType,filter:selectedFilter,likesCount:0,commentsCount:0,status:"published",createdAt:Date.now()});
+    await db.ref("users/"+myId+"/postsCount").transaction(n=>(n||0)+1);
+    if(text){for(const tag of [...text.matchAll(/#(\w+)/g)])await db.ref("hashtags/"+tag[1].toLowerCase()).set(true);}
+    $("postText").value="";$("postMediaFile").value="";$("mediaPreview").innerHTML="";$("uploadStatus").textContent="";
+    toast("Post published!","ok");showPage("home");
+  }catch(e){$("uploadStatus").textContent=friendlyError(e);toast(friendlyError(e),"err");}
+};
+$("addStoryBtn").onclick=async()=>{
+  const file=$("storyFile").files[0];
+  if(!file)return toast("Story photo select karo.","err");
+  try{
+    const snap=await firebase.storage().ref(`stories/${myId}/${Date.now()}_${file.name}`).put(file);
+    const url=await snap.ref.getDownloadURL();
+    await db.ref("stories/"+db.ref().push().key).set({userId:myId,mediaUrl:url,filter:storyFilter,caption:$("storyCaption").value.trim(),createdAt:Date.now()});
+    $("storyFile").value="";$("storyPreview").innerHTML="";$("storyCaption").value="";
+    toast("Story added!","ok");loadStories();
+  }catch(e){toast(friendlyError(e),"err");}
+};
+
 $("searchInput").oninput=async e=>{
-  const q=e.target.value.trim().toLowerCase();
-  const box=$("searchResults");
+  const q=e.target.value.trim().toLowerCase(),box=$("searchResults");
   if(q.length<2){box.innerHTML="";return;}
-  box.innerHTML='<div class="skeleton"></div>';
-  let html="";
+  box.innerHTML='<div class="skeleton"></div>';let html="";
   const us=await db.ref("users").get();
   us.forEach(u=>{const v=u.val()||{};
     if((v.username||"").toLowerCase().includes(q)||(v.displayName||"").toLowerCase().includes(q))
-      html+=`<div class="card row" onclick="openProfile('${esc(u.key)}')">
-        <img class="avatar" src="${esc(v.profileImage||'https://ui-avatars.com/api/?background=e11d2e&color=fff&name=U')}" alt="">
-        <div style="flex:1"><div style="font-weight:600;font-size:14px">${esc(v.displayName)}</div><div class="muted">@${esc(v.username)}</div></div>
-        <button class="btn btn-sm btn-ghost">View</button></div>`;});
+      html+=`<div class="card row" style="cursor:pointer" onclick="openProfile('${esc(u.key)}')"><img class="avatar" src="${esc(v.profileImage||"")}"><div style="flex:1"><div style="font-weight:600">${esc(v.displayName)}</div><div class="muted">@${esc(v.username)}</div></div><button class="btn btn-sm btn-ghost">View</button></div>`;});
   const ps=await db.ref("posts").limitToLast(100).get();
   ps.forEach(p=>{const v=p.val()||{};
     if((v.text||"").toLowerCase().includes(q)&&(!v.status||v.status==="published"))
       html+=`<div class="card"><div style="font-size:13.5px">${esc((v.text||"").slice(0,120))}</div><div class="muted" style="margin-top:5px">by ${esc(v.authorName||"")} · ${timeAgo(v.createdAt)}</div></div>`;});
-  const hs=await db.ref("hashtags").get();
-  hs.forEach(h=>{if(h.key.toLowerCase().includes(q.replace("#","")))html+=`<div class="card"><b style="color:var(--red2)">#${esc(h.key)}</b> <span class="muted">hashtag</span></div>`;});
-  box.innerHTML=html||'<div class="empty"><i class="fa-solid fa-magnifying-glass"></i>No results found</div>';
+  box.innerHTML=html||'<div class="empty">No results found</div>';
 };
 
-/* ================= PROFILE ================= */
-async function loadMyProfile(){
-  const s=await db.ref("users/"+myId).get();me=s.val();
-  $("myAvatar").src=me.profileImage||'https://ui-avatars.com/api/?background=e11d2e&color=fff&name='+encodeURIComponent(me.displayName||'U');
-  $("myName").textContent=me.displayName;$("myUsername").textContent="@"+me.username;
-  $("myBio").textContent=me.bio||"No bio yet";$("myPosts").textContent=me.postsCount||0;
-  $("myFollowers").textContent=me.followersCount||0;$("myFollowing").textContent=me.followingCount||0;
-  $("myVerified").hidden=!me.isVerified;
-  const ps=await db.ref("posts").orderByChild("authorId").equalTo(myId).get();
-  const posts=ps.exists()?Object.entries(ps.val()).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0)):[];
-  $("myPostsList").innerHTML=posts.length?posts.map(([id,p])=>`<div class="card">
-    <div style="font-size:13.5px">${esc((p.text||"(media)").slice(0,100))}</div>
-    <div class="muted" style="margin-top:5px">${p.likesCount||0} likes · ${p.commentsCount||0} comments · ${timeAgo(p.createdAt)} ${p.status==="pending_review"?'<span class="badge b-warn">Pending Review</span>':''}</div>
-    <button class="btn btn-sm btn-danger" style="margin-top:8px" onclick="delMyPost('${esc(id)}')"><i class="fa-solid fa-trash"></i> Delete</button></div>`).join("")
-    :'<div class="empty"><i class="fa-solid fa-newspaper"></i>No posts yet</div>';
-}
-window.delMyPost=id=>{if(!confirm("Delete this post?"))return;
-  db.ref("posts/"+id).remove();db.ref("likes/"+id).remove();db.ref("comments/"+id).remove();
-  db.ref("users/"+myId+"/postsCount").transaction(n=>Math.max(0,(n||1)-1)).then(()=>{toast("Post deleted.","ok");loadMyProfile();});};
-$("editProfileBtn").onclick=()=>{$("editName").value=me.displayName;$("editUsername").value=me.username;$("editBio").value=me.bio||"";$("editImageFile").value="";$("editModal").hidden=false;};
-$("editCancel").onclick=()=>$("editModal").hidden=true;
-$("editSave").onclick=async()=>{
-  const name=$("editName").value.trim(),un=$("editUsername").value.trim().toLowerCase();
-  if(!name||!/^[a-zA-Z0-9_]{3,24}$/.test(un))return toast("Valid name/username daalein.","err");
-  $("editSave").disabled=true;
-  try{
-    let newImg=me.profileImage||"";
-    const imgFile=$("editImageFile").files[0];
-    if(imgFile){
-      $("editSave").textContent="Uploading...";
-      newImg=await uploadToCloudinary(imgFile,"image");
-    }
-    if(un!==me.username){
-      const s=await db.ref("usernames/"+un).get();
-      if(s.exists()&&s.val()!==myId){$("editSave").disabled=false;$("editSave").textContent="Save";return toast("Username taken hai.","err");}
-      await db.ref("usernames/"+me.username).remove();await db.ref("usernames/"+un).set(myId);
-    }
-    await db.ref("users/"+myId).update({displayName:name,username:un,bio:$("editBio").value.trim(),profileImage:newImg});
-    $("editModal").hidden=true;$("editSave").disabled=false;$("editSave").textContent="Save";
-    toast("Profile updated!","ok");loadMyProfile();
-  }catch(e){$("editSave").disabled=false;$("editSave").textContent="Save";toast("Upload/update failed.","err");}
-};
-$("savedBtn").onclick=async()=>{
-  const s=await db.ref("savedPosts/"+myId).get();
-  if(!s.exists())return toast("Koi saved post nahi.");
-  const box=$("searchResults");
-  document.querySelectorAll(".bottom-nav button").forEach(x=>x.classList.remove("active"));
-  ["home","reels","create","chats","profile","notifs"].forEach(x=>$("page-"+x).hidden=true);
-  $("page-search").hidden=false;
-  box.innerHTML='<h3 style="margin-bottom:10px">Saved Posts</h3>';
-  for(const id of Object.keys(s.val())){
-    const p=await db.ref("posts/"+id).get();
-    if(p.exists())box.innerHTML+=`<div class="card"><div style="font-size:13.5px">${esc((p.val().text||"(media)").slice(0,120))}</div><div class="muted" style="margin-top:5px">${timeAgo(p.val().createdAt)}</div></div>`;
-  }
-};
-
-/* ================= CHATS ================= */
-async function loadChatUsers(){
-  $("chatUsers").innerHTML='<div class="skeleton"></div>';
-  const q=$("chatSearch").value.trim().toLowerCase();
-  const s=await db.ref("users").get();
-  let html="";
-  s.forEach(u=>{
-    if(u.key===myId)return;const v=u.val()||{};
-    if(q&&!((v.username||"").toLowerCase().includes(q)||(v.displayName||"").toLowerCase().includes(q)))return;
-    html+=`<div class="chat-item" onclick="openChat('${esc(u.key)}')">
-      <div style="position:relative"><img class="avatar" src="${esc(v.profileImage||'https://ui-avatars.com/api/?background=e11d2e&color=fff&name=U')}" alt="">
-      ${v.online?'<span class="online-dot" style="position:absolute;bottom:0;right:0"></span>':''}</div>
-      <div style="flex:1"><div style="font-weight:600;font-size:14px">${esc(v.displayName)}</div><div class="muted">@${esc(v.username)}</div></div>
-      <button class="btn btn-sm btn-ghost">Chat</button></div>`;
-  });
-  $("chatUsers").innerHTML=html||'<div class="empty"><i class="fa-solid fa-user-slash"></i>No users found</div>';
-}
-$("chatSearch").oninput=loadChatUsers;
-async function openChat(uid){
-  activeChat=uid;
-  const u=await db.ref("users/"+uid).get();const v=u.val()||{};
-  $("chatName").textContent=v.displayName||"User";
-  $("chatAvatar").src=v.profileImage||'https://ui-avatars.com/api/?background=e11d2e&color=fff&name=U';
-  $("chatStatus").textContent=v.online?"Online":"Offline";
-  document.querySelectorAll(".page").forEach(p=>p.hidden=true);
-  $("chatView").hidden=false;
-  const cid=convId(myId,uid);
-  db.ref("messages/"+cid).limitToLast(100).on("value",s=>{
-    const msgs=s.exists()?Object.entries(s.val()).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0)):[];
-    $("msgs").innerHTML=msgs.length?msgs.map(([id,m])=>`<div class="msg ${m.senderId===myId?'me':'them'}">
-      ${esc(m.text)}<div class="meta">${timeAgo(m.createdAt)}${m.senderId===myId?(m.read?' · ✓✓':' · ✓'):''}</div></div>`).join("")
-      :'<div class="empty"><i class="fa-regular fa-comment"></i>Conversation start karo!</div>';
-    $("msgs").scrollTop=$("msgs").scrollHeight;
-    msgs.forEach(([id,m])=>{if(m.senderId!==myId&&!m.read)db.ref("messages/"+cid+"/"+id+"/read").set(true);});
-  });
-  db.ref("typing/"+cid+"/"+uid).on("value",s=>{$("typingIndicator").hidden=!s.val();});
-  db.ref("presence/"+uid).on("value",s=>{const v=s.val()||{};$("chatStatus").textContent=v.online?"Online":"Last seen "+timeAgo(v.lastSeen);});
-}
-$("chatBack").onclick=()=>{if(activeChat)db.ref("messages/"+convId(myId,activeChat)).off();$("chatView").hidden=true;document.querySelector('[data-page="chats"]').click();};
-let typingTimeout;
-$("msgInput").oninput=()=>{
-  if(!activeChat)return;
-  const cid=convId(myId,activeChat);
-  db.ref("typing/"+cid+"/"+myId).set(true);
-  clearTimeout(typingTimeout);
-  typingTimeout=setTimeout(()=>db.ref("typing/"+cid+"/"+myId).set(false),2000);
-};
-$("sendBtn").onclick=async()=>{
-  const text=$("msgInput").value.trim();
-  if(!text||!activeChat)return;
-  const flagged=checkContent(text,"");
-  if(flagged)return toast("Message me adult/spam word hai.","err");
-  $("sendBtn").disabled=true;
-  try{
-    const cid=convId(myId,activeChat);
-    await db.ref("messages/"+cid+"/"+db.ref().push().key).set({senderId:myId,receiverId:activeChat,text,type:"text",read:false,createdAt:Date.now()});
-    await db.ref("conversations/"+cid).update({conversationId:cid,lastMessage:text,lastMessageAt:Date.now()});
-    await db.ref("conversations/"+cid+"/participants/"+myId).set(true);
-    await db.ref("conversations/"+cid+"/participants/"+activeChat).set(true);
-    await db.ref("typing/"+cid+"/"+myId).set(false);
-    await db.ref("notifications/"+activeChat+"/"+db.ref().push().key).set({type:"message",senderId:myId,referenceId:cid,message:(me.displayName||"Someone")+" sent you a message",read:false,createdAt:Date.now()});
-    $("msgInput").value="";
-  }catch(e){toast(friendlyError(e),"err");}
-  $("sendBtn").disabled=false;
-};
-
-/* ================= NOTIFICATIONS ================= */
-function listenNotifications(){
-  db.ref("notifications/"+myId).on("value",s=>{
-    let unread=0;s.forEach(n=>{if(!n.val().read)unread++;});
-    $("notifDot").hidden=unread===0;$("notifDot").textContent=unread;
-  });
-}
-async function loadNotifications(){
-  const s=await db.ref("notifications/"+myId).limitToLast(50).get();
-  const all=s.exists()?Object.entries(s.val()).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0)):[];
-  $("notifList").innerHTML=all.length?all.map(([id,n])=>`<div class="row" style="padding:10px 0">
-    <i class="fa-solid fa-bell" style="color:${n.read?'var(--muted)':'var(--red2)'}"></i>
-    <div style="flex:1"><div style="font-size:13.5px">${esc(n.message)}</div><div class="muted">${timeAgo(n.createdAt)}</div></div>
-    ${!n.read?`<button class="btn btn-sm btn-ghost" onclick="markRead('${esc(id)}')">Mark read</button>`:''}</div>`).join("")
-    :'<div class="empty"><i class="fa-regular fa-bell"></i>No notifications</div>';
-}
-window.markRead=id=>db.ref("notifications/"+myId+"/"+id+"/read").set(true).then(loadNotifications);
-
-/* ================= WEBRTC CALLS ================= */
-const rtcConfig={iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"}]};
-$("audioCallBtn").onclick=()=>startCall("audio");
-$("videoCallBtn").onclick=()=>startCall("video");
-async function startCall(type){
-  if(!activeChat)return;
-  try{
-    localStream=await navigator.mediaDevices.getUserMedia(type==="video"?{audio:true,video:true}:{audio:true});
-  }catch(e){return toast("Mic/Camera permission nahi mili.","err");}
-  const callRef=db.ref("calls").push();
-  currentCall={id:callRef.key,peer:activeChat,type,role:"caller"};
-  pc=new RTCPeerConnection(rtcConfig);
-  localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
-  pc.ontrack=e=>{$("remoteVideo").srcObject=e.streams[0];$("callStatus").textContent="Connected";};
-  pc.onicecandidate=e=>{if(e.candidate)callRef.child("candidates/"+myId).push(e.candidate.toJSON());};
-  const offer=await pc.createOffer();await pc.setLocalDescription(offer);
-  await callRef.set({callerId:myId,receiverId:activeChat,type,status:"ringing",offer:{type:offer.type,sdp:offer.sdp},createdAt:Date.now()});
-  $("callName").textContent=(await db.ref("users/"+activeChat).get()).val()?.displayName||"User";
-  $("callStatus").textContent="Ringing...";$("callScreen").hidden=false;
-  if(type==="video")$("localVideo").srcObject=localStream;
-  callRef.child("answer").on("value",async s=>{
-    if(s.exists()&&pc&&pc.signalingState!=="stable"){await pc.setRemoteDescription(new RTCSessionDescription(s.val()));$("callStatus").textContent="Connected";}
-  });
-  callRef.child("candidates/"+activeChat).on("child_added",async s=>{
-    if(pc)try{await pc.addIceCandidate(new RTCIceCandidate(s.val()));}catch{}
-  });
-  callRef.child("status").on("value",s=>{
-    if(s.val()==="rejected"||s.val()==="ended")endCall();
-  });
-  callRef.child("status").onDisconnect().set("ended");
-}
-function listenIncomingCalls(){
-  db.ref("calls").orderByChild("receiverId").equalTo(myId).limitToLast(1).on("child_added",async s=>{
-    const c=s.val();
-    if(!c||c.status!=="ringing")return;
-    currentCall={id:s.key,peer:c.callerId,type:c.type,role:"receiver",ref:s.ref};
-    const u=await db.ref("users/"+c.callerId).get();
-    $("incomingName").textContent=u.val()?.displayName||"Unknown";
-    $("incomingType").textContent=c.type==="video"?"Incoming video call":"Incoming audio call";
-    $("incomingCall").hidden=false;
-  });
-}
-$("acceptCall").onclick=async()=>{
-  $("incomingCall").hidden=true;
-  try{
-    localStream=await navigator.mediaDevices.getUserMedia(currentCall.type==="video"?{audio:true,video:true}:{audio:true});
-  }catch(e){await currentCall.ref.child("status").set("rejected");return toast("Mic/Camera permission nahi mili.","err");}
-  const callRef=currentCall.ref;
-  pc=new RTCPeerConnection(rtcConfig);
-  localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
-  pc.ontrack=e=>{$("remoteVideo").srcObject=e.streams[0];$("callStatus").textContent="Connected";};
-  pc.onicecandidate=e=>{if(e.candidate)callRef.child("candidates/"+myId).push(e.candidate.toJSON());};
-  const offerSnap=await callRef.child("offer").get();
-  await pc.setRemoteDescription(new RTCSessionDescription(offerSnap.val()));
-  const answer=await pc.createAnswer();await pc.setLocalDescription(answer);
-  await callRef.child("answer").set({type:answer.type,sdp:answer.sdp});
-  await callRef.child("status").set("active");
-  $("callName").textContent=$("incomingName").textContent;
-  $("callStatus").textContent="Connected";$("callScreen").hidden=false;
-  if(currentCall.type==="video")$("localVideo").srcObject=localStream;
-  callRef.child("candidates/"+currentCall.peer).on("child_added",async s=>{
-    if(pc)try{await pc.addIceCandidate(new RTCIceCandidate(s.val()));}catch{}
-  });
-};
-$("rejectCall").onclick=async()=>{$("incomingCall").hidden=true;if(currentCall?.ref)await currentCall.ref.child("status").set("rejected");};
-$("endCallBtn").onclick=async()=>{if(currentCall?.ref)await currentCall.ref.child("status").set("ended");endCall();};
-$("muteBtn").onclick=()=>{const t=localStream?.getAudioTracks()[0];if(t){t.enabled=!t.enabled;$("muteBtn").innerHTML=t.enabled?'<i class="fa-solid fa-microphone"></i>':'<i class="fa-solid fa-microphone-slash"></i>';}};
-$("camBtn").onclick=()=>{const t=localStream?.getVideoTracks()[0];if(t){t.enabled=!t.enabled;$("camBtn").innerHTML=t.enabled?'<i class="fa-solid fa-video"></i>':'<i class="fa-solid fa-video-slash"></i>';}};
-function endCall(){
-  if(pc){pc.close();pc=null;}
-  if(localStream){localStream.getTracks().forEach(t=>t.stop());localStream=null;}
-  $("remoteVideo").srcObject=null;$("localVideo").srcObject=null;
-  $("callScreen").hidden=true;$("incomingCall").hidden=true;
-  if(currentCall?.ref){currentCall.ref.child("status").off();currentCall.ref.child("answer").off();}
-  currentCall=null;
-}/* ================= FOLLOW SYSTEM ================= */
-window.toggleFollow=async(uid,isFollowing)=>{
-  const btn=$("followBtn-"+uid);
-  if(btn)btn.disabled=true;
-  try{
-    if(isFollowing){
-      await db.ref("followers/"+uid+"/"+myId).remove();
-      await db.ref("following/"+myId+"/"+uid).remove();
-      await db.ref("users/"+uid+"/followersCount").transaction(n=>Math.max(0,(n||1)-1));
-      await db.ref("users/"+myId+"/followingCount").transaction(n=>Math.max(0,(n||1)-1));
-      toast("Unfollowed.","ok");
-    }else{
-      await db.ref("followers/"+uid+"/"+myId).set(true);
-      await db.ref("following/"+myId+"/"+uid).set(true);
-      await db.ref("users/"+uid+"/followersCount").transaction(n=>(n||0)+1);
-      await db.ref("users/"+myId+"/followingCount").transaction(n=>(n||0)+1);
-      await db.ref("notifications/"+uid+"/"+db.ref().push().key).set({
-        type:"follow",senderId:myId,referenceId:myId,
-        message:(me.displayName||"Someone")+" started following you",
-        read:false,createdAt:Date.now()
-      });
-      toast("Followed!","ok");
-    }
-    openProfile(uid);
-  }catch(e){toast(friendlyError(e),"err");}
-  if(btn)btn.disabled=false;
-};
-
-window.showFollowList=async(uid,type)=>{
-  $("followListTitle").textContent=type==="followers"?"Followers":"Following";
-  $("followListBody").innerHTML='<div class="skeleton"></div>';
-  $("followListModal").hidden=false;
-  try{
-    const s=await db.ref(type+"/"+uid).get();
-    if(!s.exists()){$("followListBody").innerHTML='<div class="empty"><i class="fa-solid fa-user-slash"></i>No '+type+' yet</div>';return;}
-    let html="";
-    for(const fid of Object.keys(s.val())){
-      const u=await db.ref("users/"+fid).get();
-      const v=u.exists()?u.val():{displayName:"Unknown",username:"unknown",profileImage:""};
-      html+=`<div class="row" style="padding:8px 0;cursor:pointer" onclick="openProfile('${esc(fid)}');$('followListModal').hidden=true">
-        <img class="avatar avatar-sm" src="${esc(v.profileImage||'https://ui-avatars.com/api/?background=1d1d20&color=fff&name=U')}" alt="">
-        <div style="flex:1"><div style="font-size:13.5px;font-weight:600">${esc(v.displayName)}</div><div class="muted">@${esc(v.username)}</div></div></div>`;
-    }
-    $("followListBody").innerHTML=html||'<div class="empty"><i class="fa-solid fa-user-slash"></i>No '+type+' yet</div>';
-  }catch(e){$("followListBody").innerHTML=`<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i>${esc(friendlyError(e))}</div>`;}
-};
-$("followListClose").onclick=()=>$("followListModal").hidden=true;
-
-window.loadUserPosts=async uid=>{
-  const box=$("userPosts-"+uid);
-  if(!box)return;
-  try{
-    const s=await db.ref("posts").orderByChild("authorId").equalTo(uid).get();
-    const posts=s.exists()?Object.entries(s.val()).filter(([,p])=>!p.status||p.status==="published").sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0)):[];
-    box.innerHTML=posts.length?posts.map(([id,p])=>{
-      let media="";
-      if(p.mediaType==="image"&&p.mediaUrl)media=`<img src="${esc(p.mediaUrl)}" style="width:100%;border-radius:10px;margin-top:8px;max-height:250px;object-fit:cover" alt="">`;
-      if(p.mediaType==="video"&&p.mediaUrl)media=`<video src="${esc(p.mediaUrl)}" controls style="width:100%;border-radius:10px;margin-top:8px;max-height:250px"></video>`;
-      return`<div class="card">
-        <div style="font-size:13.5px">${esc((p.text||"(media)").slice(0,120))}</div>
-        ${media}
-        <div class="muted" style="margin-top:6px">${p.likesCount||0} likes · ${p.commentsCount||0} comments · ${timeAgo(p.createdAt)}</div>
-        <button class="btn btn-sm btn-ghost" style="margin-top:8px" onclick="openComments('${esc(id)}')"><i class="fa-regular fa-comment"></i> Comments</button></div>`;
-    }).join(""):'<div class="empty"><i class="fa-solid fa-newspaper"></i>No posts yet</div>';
-  }catch(e){box.innerHTML=`<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i>${esc(friendlyError(e))}</div>`;}
-};/* ================= PROFILE VIEW + FOLLOW SYSTEM ================= */
 window.openProfile=async uid=>{
-  const u=await db.ref("users/"+uid).get();
+  const u=(await db.ref("users/"+uid).get());
   if(!u.exists())return toast("User not found.","err");
-  const v=u.val();
-  const isMe=uid===myId;
-  const followSnap=await db.ref("followers/"+uid+"/"+myId).get();
-  const isFollowing=followSnap.exists();
-  const box=$("searchResults");
-  document.querySelectorAll(".bottom-nav button").forEach(x=>x.classList.remove("active"));
-  ["home","reels","create","chats","profile","notifs"].forEach(x=>$("page-"+x).hidden=true);
-  $("page-search").hidden=false;
-  box.innerHTML=`<div class="card" style="text-align:center">
-    <img class="avatar avatar-lg" style="margin:0 auto 10px" src="${esc(v.profileImage||'https://ui-avatars.com/api/?background=e11d2e&color=fff&name=U')}" alt="">
-    <h2 style="font-size:18px">${esc(v.displayName)} ${v.isVerified?'<i class="fa-solid fa-circle-check" style="color:var(--red2)"></i>':''}</h2>
-    <p class="muted">@${esc(v.username)}</p>
-    <p style="font-size:13px;margin:8px 0">${esc(v.bio||"No bio yet")}</p>
+  $("chatView").hidden=true;
+  const v=u.val(),isMe=uid===myId,isFollowing=(await db.ref("followers/"+uid+"/"+myId).get()).exists();
+  showPage("search");
+  $("searchResults").innerHTML=`<div class="card" style="text-align:center">
+    <img class="avatar avatar-lg" style="margin:0 auto 10px" src="${esc(v.profileImage||`https://ui-avatars.com/api/?background=e11d2e&color=fff&name=U`)}">
+    <h2 style="font-size:18px">${esc(v.displayName)}</h2>
+    <p class="muted">
+  <span class="nx-username">
+    @${esc(v.username||"")}${verifiedBadge(v.isVerified)}
+  </span>
+</p><p style="font-size:13px;margin:8px 0">${esc(v.bio||"No bio yet")}</p>
     <div class="row" style="justify-content:center;gap:22px;margin:12px 0">
       <div><b>${v.postsCount||0}</b><div class="muted">Posts</div></div>
       <div style="cursor:pointer" onclick="showFollowList('${esc(uid)}','followers')"><b>${v.followersCount||0}</b><div class="muted">Followers</div></div>
       <div style="cursor:pointer" onclick="showFollowList('${esc(uid)}','following')"><b>${v.followingCount||0}</b><div class="muted">Following</div></div>
     </div>
-    ${isMe
-      ? '<button class="btn btn-ghost" style="width:auto;margin:0" onclick="document.querySelector(\'[data-page=profile]\').click()"><i class="fa-solid fa-user"></i> My Profile</button>'
-      : `<button id="followBtn-${esc(uid)}" class="btn ${isFollowing?'btn-ghost':'btn-primary'}" style="width:auto;margin:0" onclick="toggleFollow('${esc(uid)}',${isFollowing})">
-          <i class="fa-${isFollowing?'fa-user-check':'fa-user-plus'}"></i> ${isFollowing?'Following':'Follow'}</button>
-        <button class="btn btn-ghost" style="width:auto;margin:0;margin-top:8px" onclick="openChat('${esc(uid)}')"><i class="fa-solid fa-comment"></i> Message</button>`}
-  </div>
-  <h3 style="margin:14px 0 10px">Posts</h3>
-  <div id="userPosts-${esc(uid)}"><div class="skeleton"></div></div>`;
+    ${isMe?'<button class="btn btn-ghost" style="width:auto;margin:0" onclick="showPage(\'profile\')">My Profile</button>':`<button id="followBtn-${esc(uid)}" class="btn ${isFollowing?"btn-ghost":"btn-primary"}" style="width:auto;margin:0" onclick="toggleFollow('${esc(uid)}',${isFollowing})">${isFollowing?"Following":"Follow"}</button><button class="btn btn-ghost" style="width:auto;margin:8px 0 0" onclick="openChat('${esc(uid)}')">Message</button>`}
+  </div><h3 style="margin:14px 0 10px">Posts</h3><div id="userPosts-${esc(uid)}"><div class="skeleton"></div></div>`;
   loadUserPosts(uid);
 };
-
 window.toggleFollow=async(uid,isFollowing)=>{
-  const btn=$("followBtn-"+uid);
-  if(btn)btn.disabled=true;
+  const btn=$("followBtn-"+uid);if(btn)btn.disabled=true;
   try{
     if(isFollowing){
       await db.ref("followers/"+uid+"/"+myId).remove();
@@ -998,56 +829,1084 @@ window.toggleFollow=async(uid,isFollowing)=>{
       await db.ref("following/"+myId+"/"+uid).set(true);
       await db.ref("users/"+uid+"/followersCount").transaction(n=>(n||0)+1);
       await db.ref("users/"+myId+"/followingCount").transaction(n=>(n||0)+1);
-      await db.ref("notifications/"+uid+"/"+db.ref().push().key).set({
-        type:"follow",senderId:myId,referenceId:myId,
-        message:(me.displayName||"Someone")+" started following you",
-        read:false,createdAt:Date.now()
-      });
+      await db.ref("notifications/"+uid+"/"+db.ref().push().key).set({type:"follow",senderId:myId,referenceId:myId,message:(me.displayName||"Someone")+" started following you",read:false,createdAt:Date.now()});
       toast("Followed!","ok");
     }
     openProfile(uid);
   }catch(e){toast(friendlyError(e),"err");}
   if(btn)btn.disabled=false;
 };
-
 window.showFollowList=async(uid,type)=>{
   $("followListTitle").textContent=type==="followers"?"Followers":"Following";
-  $("followListBody").innerHTML='<div class="skeleton"></div>';
-  $("followListModal").hidden=false;
-  try{
-    const s=await db.ref(type+"/"+uid).get();
-    if(!s.exists()){$("followListBody").innerHTML='<div class="empty"><i class="fa-solid fa-user-slash"></i>No '+type+' yet</div>';return;}
-    let html="";
-    for(const fid of Object.keys(s.val())){
-      const u=await db.ref("users/"+fid).get();
-      const v=u.exists()?u.val():{displayName:"Unknown",username:"unknown",profileImage:""};
-      html+=`<div class="row" style="padding:8px 0;cursor:pointer" onclick="$('followListModal').hidden=true;openProfile('${esc(fid)}')">
-        <img class="avatar avatar-sm" src="${esc(v.profileImage||'https://ui-avatars.com/api/?background=1d1d20&color=fff&name=U')}" alt="">
-        <div style="flex:1"><div style="font-size:13.5px;font-weight:600">${esc(v.displayName)}</div><div class="muted">@${esc(v.username)}</div></div></div>`;
-    }
-    $("followListBody").innerHTML=html||'<div class="empty"><i class="fa-solid fa-user-slash"></i>No '+type+' yet</div>';
-  }catch(e){$("followListBody").innerHTML=`<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i>${esc(friendlyError(e))}</div>`;}
+  $("followListModal").hidden=false;$("followListBody").innerHTML='<div class="skeleton"></div>';
+  const s=await db.ref(type+"/"+uid).get();
+  if(!s.exists()){$("followListBody").innerHTML='<div class="empty">No '+type+' yet</div>';return;}
+  let html="";
+  for(const fid of Object.keys(s.val())){
+    const v=((await db.ref("users/"+fid).get()).val())||{displayName:"Unknown",username:"unknown"};
+    html+=`<div class="row" style="padding:8px 0;cursor:pointer" onclick="$('followListModal').hidden=true;openProfile('${esc(fid)}')"><img class="avatar avatar-sm" src="${esc(v.profileImage||"")}"><div style="flex:1"><div style="font-weight:600">${esc(v.displayName)}</div><div class="muted">@${esc(v.username)}</div></div></div>`;
+  }
+  $("followListBody").innerHTML=html;
 };
 $("followListClose").onclick=()=>$("followListModal").hidden=true;
-
 window.loadUserPosts=async uid=>{
-  const box=$("userPosts-"+uid);
-  if(!box)return;
+  const box=$("userPosts-"+uid);if(!box)return;
   try{
     const s=await db.ref("posts").orderByChild("authorId").equalTo(uid).get();
     const posts=s.exists()?Object.entries(s.val()).filter(([,p])=>!p.status||p.status==="published").sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0)):[];
-    box.innerHTML=posts.length?posts.map(([id,p])=>{
-      let media="";
-      if(p.mediaType==="image"&&p.mediaUrl)media=`<img src="${esc(p.mediaUrl)}" style="width:100%;border-radius:10px;margin-top:8px;max-height:250px;object-fit:cover" alt="">`;
-      if(p.mediaType==="video"&&p.mediaUrl)media=`<video src="${esc(p.mediaUrl)}" controls style="width:100%;border-radius:10px;margin-top:8px;max-height:250px"></video>`;
-      return`<div class="card">
-        <div style="font-size:13.5px">${esc((p.text||"(media)").slice(0,120))}</div>
-        ${media}
-        <div class="muted" style="margin-top:6px">${p.likesCount||0} likes · ${p.commentsCount||0} comments · ${timeAgo(p.createdAt)}</div>
-        <button class="btn btn-sm btn-ghost" style="margin-top:8px" onclick="openComments('${esc(id)}')"><i class="fa-regular fa-comment"></i> Comments</button></div>`;
-    }).join(""):'<div class="empty"><i class="fa-solid fa-newspaper"></i>No posts yet</div>';
-  }catch(e){box.innerHTML=`<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i>${esc(friendlyError(e))}</div>`;}
+    box.innerHTML=posts.length?posts.map(([id,p])=>`<div class="card"><div style="font-size:13.5px">${esc((p.text||"(media)").slice(0,120))}</div>${p.mediaType==="image"&&p.mediaUrl?`<img src="${esc(p.mediaUrl)}" style="width:100%;border-radius:10px;margin-top:8px;max-height:250px;object-fit:cover;filter:${esc(p.filter||"none")}">`:""}${p.mediaType==="video"&&p.mediaUrl?`<video src="${esc(p.mediaUrl)}" controls style="width:100%;border-radius:10px;margin-top:8px;max-height:250px;filter:${esc(p.filter||"none")}"></video>`:""}</div>`).join(""):'<div class="empty">No posts yet</div>';
+  }catch(e){box.innerHTML=`<div class="empty">${esc(friendlyError(e))}</div>`;}
 };
+
+async function loadChats(){
+  const q=$("chatSearch").value.trim().toLowerCase(),box=$("chatUsers");
+  const s=await db.ref("users").get();let html="";
+  s.forEach(u=>{const v=u.val()||{};
+    if(u.key!==myId&&((v.username||"").toLowerCase().includes(q)||(v.displayName||"").toLowerCase().includes(q)))
+      html+=`<div class="chat-item" onclick="openChat('${esc(u.key)}')"><img class="avatar" src="${esc(v.profileImage||"")}"><div style="flex:1"><div style="font-weight:600">${esc(v.displayName)}</div><div class="muted">@${esc(v.username)}</div></div><button class="btn btn-sm btn-ghost">Chat</button></div>`;});
+  box.innerHTML=html||'<div class="empty">No users found</div>';
+}
+$("chatSearch").oninput=loadChats;
+window.openChat=async uid=>{
+  const cid=chatId(myId,uid);
+  db.ref("messages/"+cid).once("value").then(s=>{
+    if(!s.exists())return;
+    Object.entries(s.val()).forEach(([id,m])=>{
+      if(m.senderId===uid&&!m.read)db.ref("messages/"+cid+"/"+id+"/read").set(true);
+    });
+  });
+  activeChat=uid;
+  const v=((await db.ref("users/"+uid).get()).val())||{};
+  $("chatAvatar").src=v.profileImage||`https://ui-avatars.com/api/?background=1d1d20&color=fff&name=U`;
+  $("chatName").textContent=v.displayName||"User";
+  $("chatStatus").textContent="@"+(v.username||"");
+  $("chatView").hidden=false;
+  document.querySelectorAll(".page").forEach(x=>x.hidden=true);
+  db.ref("messages/"+cid).limitToLast(100).on("value",s=>{
+    const all=s.exists()?Object.entries(s.val()).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0)):[];
+    $("msgs").innerHTML=all.length?all.map(([id,m])=>{
+      if(m.deleted)return `<div class="msg ${m.senderId===myId?"me":"them"}"><i>This message was unsent</i><div class="meta">${timeAgo(m.createdAt)}</div></div>`;
+      const seen=m.senderId===myId?(m.read?'<i class="fa-solid fa-check-double"></i>':'<i class="fa-solid fa-check"></i>'):"";
+      return `<div class="msg ${m.senderId===myId?"me":"them"}" ${m.senderId===myId?`oncontextmenu="unsendMessage('${esc(id)}');return false"`:""}>${esc(m.text)}<div class="meta">${new Date(m.createdAt).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})} ${seen}</div></div>`;
+    }).join(""):'<div class="empty">Say hello 👋</div>';
+    $("msgs").scrollTop=$("msgs").scrollHeight;
+  });
+};
+$("chatBack").onclick=()=>{$("chatView").hidden=true;showPage("chats");window.scrollTo(0,0);};
+$("chatProfile").onclick=()=>{if(activeChat)openProfile(activeChat);};
+$("sendBtn").onclick=async()=>{
+  const text=$("msgInput").value.trim();if(!text||!activeChat)return;
+  const cid=chatId(myId,activeChat),id=db.ref().push().key;
+  await db.ref("messages/"+cid+"/"+id).set({senderId:myId,receiverId:activeChat,text,type:"text",read:false,createdAt:Date.now()});
+  $("msgInput").value="";
+  await db.ref("notifications/"+activeChat+"/"+db.ref().push().key).set({type:"message",senderId:myId,referenceId:cid,message:(me.displayName||"Someone")+" sent you a message",read:false,createdAt:Date.now()});
+};
+$("msgInput").addEventListener("keydown",e=>{if(e.key==="Enter")$("sendBtn").click();});
+window.unsendMessage=async id=>{
+  if(!confirm("Unsend this message?"))return;
+  await db.ref("messages/"+chatId(myId,activeChat)+"/"+id).update({deleted:true,text:"This message was unsent"});
+  toast("Message unsent.","ok");
+};
+
+function listenNotifications(){
+  db.ref("notifications/"+myId).limitToLast(30).on("value",s=>{
+    const all=s.exists()?Object.entries(s.val()).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0)):[];
+    const unread=all.filter(([,n])=>!n.read).length;
+    $("notifDot").hidden=!unread;$("notifDot").textContent=unread;
+    $("notifList").innerHTML=all.length?all.map(([id,n])=>`<div class="row" style="padding:8px 0;border-bottom:1px solid var(--line)"><div style="flex:1"><div style="font-size:13.5px">${esc(n.message)}</div><div class="muted">${timeAgo(n.createdAt)}</div></div>${n.referenceId?`<button class="btn btn-sm btn-ghost" onclick="openNotification('${esc(n.type)}','${esc(n.referenceId)}','${esc(n.senderId||"")}')">Open</button>`:""}</div>`).join(""):'<div class="empty">No notifications</div>';
+  });
+}
+window.openNotification=(type,refId,senderId)=>{
+  if(type==="follow"&&senderId)openProfile(senderId);
+  else if(type==="message"&&senderId)openChat(senderId);
+  else if(refId)openComments(refId);
+};
+
+$("videoCallBtn").onclick=()=>startCall(true);
+$("audioCallBtn").onclick=()=>startCall(false);
+async function startCall(video){
+  try{
+    localStream=await navigator.mediaDevices.getUserMedia({video,audio:true});
+    $("localVideo").srcObject=localStream;$("localVideo").style.display=video?"block":"none";
+    $("callName").textContent=$("chatName").textContent;$("callStatus").textContent="Calling...";
+    $("callScreen").hidden=false;
+    currentCallId=db.ref().push().key;callPartner=activeChat;
+    pc=new RTCPeerConnection();
+    localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
+    pc.ontrack=e=>{remoteStream=e.streams[0];$("remoteVideo").srcObject=remoteStream;$("callStatus").textContent="Connected";};
+    pc.onicecandidate=e=>{if(e.candidate)db.ref("calls/"+currentCallId+"/candidates/"+myId).push(e.candidate.toJSON());};
+    db.ref("calls/"+currentCallId+"/answer").on("value",async s=>{
+      if(s.exists()&&!pc.currentRemoteDescription)await pc.setRemoteDescription(new RTCSessionDescription(s.val()));
+    });
+    db.ref("calls/"+currentCallId+"/candidates/"+callPartner).on("child_added",async s=>{
+      if(pc)await pc.addIceCandidate(new RTCIceCandidate(s.val()));
+    });
+    const offer=await pc.createOffer();await pc.setLocalDescription(offer);
+    await db.ref("calls/"+currentCallId).update({caller:myId,receiver:callPartner,video,offer:{type:offer.type,sdp:offer.sdp},status:"ringing",createdAt:Date.now()});
+  }catch(e){toast(friendlyError(e),"err");endCall();}
+}
+function endCall(){
+  try{pc&&pc.close();}catch{}
+  localStream?.getTracks().forEach(t=>t.stop());
+  $("callScreen").hidden=true;$("remoteVideo").srcObject=null;$("localVideo").srcObject=null;
+  pc=null;localStream=null;remoteStream=null;
+}
+$("endCallBtn").onclick=()=>{if(currentCallId)db.ref("calls/"+currentCallId+"/status").set("ended");endCall();};
+$("muteBtn").onclick=()=>{const t=localStream?.getAudioTracks()[0];if(t){t.enabled=!t.enabled;$("muteBtn").innerHTML=`<i class="fa-solid fa-microphone${t.enabled?"":"-slash"}"></i>`;}};
+$("camBtn").onclick=()=>{const t=localStream?.getVideoTracks()[0];if(t){t.enabled=!t.enabled;$("camBtn").innerHTML=`<i class="fa-solid fa-video${t.enabled?"":"-slash"}"></i>`;}};
+$("localVideo").onclick=()=>{
+  const local=$("localVideo"),remote=$("remoteVideo");
+  [local.style.width,remote.style.width]=[remote.style.width,local.style.width];
+  [local.style.height,remote.style.height]=[remote.style.height,local.style.height];
+  [local.style.position,remote.style.position]=[remote.style.position,local.style.position];
+  [local.style.bottom,remote.style.bottom]=[remote.style.bottom,local.style.bottom];
+  [local.style.right,remote.style.right]=[remote.style.right,local.style.right];
+  [local.style.inset,remote.style.inset]=[remote.style.inset,local.style.inset];
+};
+
+history.replaceState({nexly:"app"},"",location.href);
+history.pushState({nexly:"app"},"",location.href);
+window.addEventListener("popstate",()=>{
+  if(!$("storyViewer").hidden){$("storyViewer").hidden=true;history.pushState({nexly:"app"},"",location.href);return;}
+  if(!$("chatView").hidden){$("chatView").hidden=true;showPage("chats");history.pushState({nexly:"app"},"",location.href);return;}
+  if(!$("page-search").hidden){showPage("home");history.pushState({nexly:"app"},"",location.href);}
+});
+
+$("createNavBtn").addEventListener("click",e=>{e.preventDefault();openCamera();});
+function openCamera(){
+  $("cameraModal").hidden=false;
+  navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"},audio:false})
+  .then(s=>{cameraStream=s;$("cameraVideo").srcObject=s;})
+  .catch(()=>{$("galleryInput").click();});
+}
+function closeCamera(){
+  $("cameraModal").hidden=true;
+  if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null;}
+}
+$("cameraClose").onclick=closeCamera;
+document.querySelectorAll(".filter-btn").forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll(".filter-btn").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");cameraFilter=b.dataset.filter;
+    $("cameraVideo").style.filter=cameraFilter;
+  };
+});
+document.querySelectorAll(".upload-tab").forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll(".upload-tab").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");uploadType=b.dataset.type;
+  };
+});
+$("galleryOpen").onclick=()=>$("galleryInput").click();
+$("galleryInput").onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  closeCamera();openMediaComposer(uploadType,URL.createObjectURL(f));
+};
+$("captureBtn").onclick=()=>{
+  const v=$("cameraVideo");
+  if(!v.videoWidth)return toast("Camera ready nahi hai.","err");
+  const c=document.createElement("canvas");
+  c.width=v.videoWidth;c.height=v.videoHeight;
+  const ctx=c.getContext("2d");
+  ctx.filter=cameraFilter;
+  ctx.drawImage(v,0,0,c.width,c.height);
+  const photo=c.toDataURL("image/jpeg",.9);
+  closeCamera();openMediaComposer(uploadType,photo);
+};
+function openMediaComposer(type,media){
+  $("storyViewer").hidden=false;
+  $("storyImg").src=media;
+  $("storyImg").style.filter="none";
+  $("storyCaption").textContent=type==="story"?"Story preview":type==="reel"?"Reel preview":"Post preview";
+}
+
+$("editProfileBtn").onclick=()=>{
+  $("editName").value=me.displayName||"";
+  $("editUsername").value=me.username||"";
+  $("editBio").value=me.bio||"";
+  $("editModal").hidden=false;
+};
+$("editCancel").onclick=()=>$("editModal").hidden=true;
+$("editSave").onclick=async()=>{
+  const name=$("editName").value.trim(),username=$("editUsername").value.trim().toLowerCase(),bio=$("editBio").value.trim(),file=$("editImageFile").files[0];
+  if(!name||!username)return toast("Name aur username zaroori hai.","err");
+  try{
+    let profileImage=me.profileImage||"";
+    if(file){
+      toast("Uploading photo...","ok");
+      const path=`profileImages/${myId}/${Date.now()}_${file.name}`;
+      const snap=await firebase.storage().ref(path).put(file);
+      profileImage=await snap.ref.getDownloadURL();
+    }
+    await db.ref("users/"+myId).update({displayName:name,username,bio,profileImage});
+    me.displayName=name;me.username=username;me.bio=bio;me.profileImage=profileImage;
+    $("editImageFile").value="";$("editModal").hidden=true;
+    loadMyProfile();toast("Profile updated!","ok");
+  }catch(e){toast(friendlyError(e),"err");}
+};
+
+function openMenu(){
+  $("menuAvatar").src=me.profileImage||`https://ui-avatars.com/api/?background=e11d2e&color=fff&name=${encodeURIComponent(me.displayName||"U")}`;
+  $("menuName").textContent=me.displayName||"User";
+  $("menuUsername").textContent="@"+(me.username||"");
+  $("sideMenu").hidden=false;
+}
+function closeMenu(){$("sideMenu").hidden=true;}
+$("menuBtn").onclick=openMenu;
+$("menuBackdrop").onclick=closeMenu;
+$("menuProfile").onclick=()=>{closeMenu();showPage("profile");};
+$("menuSaved").onclick=()=>{closeMenu();showPage("profile");$("savedBtn").click();};
+$("menuNotifs").onclick=()=>{closeMenu();showPage("notifs");};
+$("menuEdit").onclick=()=>{closeMenu();$("editProfileBtn").click();};
+$("menuSettings").onclick=()=>{closeMenu();toast("Settings coming soon.","ok");};
+$("menuLogout").onclick=async()=>{closeMenu();await auth.signOut();location.reload();};
+
+/* ================= MONETIZATION SYSTEM ================= */
+$("menuMonetize").onclick=()=>{closeMenu();showPage("monetize");};
+
+$("monetizePayout").onchange=e=>{
+  $("upiLabel").textContent=e.target.value==="upi"?"UPI ID":"Bank Account Number";
+  $("monetizeUpi").placeholder=e.target.value==="upi"?"yourname@upi":"Account number";
+};
+
+function setReq(id,pass,text){
+  const el=$(id);if(!el)return;
+  el.className="req-row "+(pass?"pass":"fail");
+  el.innerHTML=`<i class="fa-solid fa-${pass?"circle-check":"circle-xmark"}"></i> ${text}`;
+}
+
+async function loadMonetization(){
+  const followers=me.followersCount||0;
+  const views=me.views30||0;
+  const age=me.age||0;
+
+  $("reqFollowersCount").textContent=`${followers.toLocaleString()} / 1,000`;
+  const fPercent=Math.min(100,(followers/1000)*100);
+  $("followersBar").style.width=fPercent+"%";
+  $("followersBar").classList.toggle("done",followers>=1000);
+
+  $("reqViewsCount").textContent=`${views.toLocaleString()} / 10,000`;
+  const vPercent=Math.min(100,(views/10000)*100);
+  $("viewsBar").style.width=vPercent+"%";
+  $("viewsBar").classList.toggle("done",views>=10000);
+
+  setReq("reqAge",age>=18,age?`${age} years old`:"Age not set");
+  setReq("reqTips",followers>=500,`${followers}/500 followers for Tips`);
+
+  const m=await db.ref("memberships/"+myId).get();
+  creatorMembership=m.exists()&&m.val().active===true;
+  setReq("reqMember",creatorMembership,creatorMembership?"Membership active":"₹99/month required");
+
+  const s=await db.ref("monetization/"+myId).get();
+  const data=s.exists()?s.val():null;
+
+  if(!data){
+    $("monetizeStatus").innerHTML='<span class="muted">Status: <b>Not applied</b></span>';
+  }else if(data.status==="pending"){
+    $("monetizeStatus").innerHTML='<span class="status-pending"><i class="fa-solid fa-clock"></i> Application pending review.</span>';
+  }else if(data.status==="approved"){
+    $("monetizeStatus").innerHTML='<span class="status-approved"><i class="fa-solid fa-circle-check"></i> Monetization approved!</span>';
+    $("monetizeDashboard").hidden=false;
+    loadEarnings();
+    return;
+  }else{
+    $("monetizeStatus").innerHTML='<span class="status-rejected"><i class="fa-solid fa-xmark"></i> Rejected: '+esc(data.reason||"Policy violation")+'</span>';
+  }
+
+  const eligible=followers>=1000&&views>=10000&&age>=18&&creatorMembership;
+  $("monetizeApply").hidden=!eligible;
+  $("membershipBox").hidden=creatorMembership;
+}
+
+$("buyMembershipBtn").onclick=async()=>{
+  await db.ref("memberships/"+myId).set({active:true,plan:"monthly",price:99,startedAt:Date.now()});
+  toast("Creator Membership active!","ok");
+  loadMonetization();
+};
+
+$("monetizeApplyBtn").onclick=async()=>{
+  const method=$("monetizePayout").value;
+  const payoutId=$("monetizeUpi").value.trim();
+  if(!payoutId)return toast(method==="upi"?"UPI ID likho.":"Account number likho.","err");
+  if(!$("monetizeAgree").checked)return toast("Policy accept karo.","err");
+  try{
+    await db.ref("monetization/"+myId).set({uid:myId,payoutMethod:method,payoutId,status:"pending",appliedAt:Date.now()});
+    toast("Application submitted!","ok");
+    loadMonetization();
+  }catch(e){toast(friendlyError(e),"err");}
+};
+
+async function loadEarnings(){
+  const s=await db.ref("earnings/"+myId).get();
+  const data=s.exists()?s.val():{};
+  const total=data.total||0,paid=data.paid||0;
+  $("monetizeEarnings").textContent="₹"+total;
+  $("monetizeAvailable").textContent="₹"+Math.max(0,total-paid);
+  const h=await db.ref("payouts/"+myId).get();
+  const list=h.exists()?Object.entries(h.val()).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0)):[];
+  $("payoutHistory").innerHTML=list.length?list.map(([id,p])=>`<div class="row" style="padding:8px 0;border-bottom:1px solid var(--line)"><div style="flex:1"><div style="font-size:13px">₹${p.amount} · ${p.method.toUpperCase()}</div><div class="muted">${timeAgo(p.createdAt)}</div></div><span class="badge ${p.status==="paid"?"b-ok":"b-red"}">${p.status}</span></div>`).join(""):'<div class="muted">No payouts yet.</div>';
+}
+
+$("payoutBtn").onclick=async()=>{
+  const s=await db.ref("earnings/"+myId).get();
+  const data=s.exists()?s.val():{};
+  const available=Math.max(0,(data.total||0)-(data.paid||0));
+  if(available<500)return toast("Minimum payout ₹500 hai.","err");
+  const m=await db.ref("monetization/"+myId).get();
+  const info=m.val()||{};
+  const id=db.ref().push().key;
+  await db.ref("payouts/"+myId+"/"+id).set({amount:available,method:info.payoutMethod||"upi",payoutId:info.payoutId||"",status:"pending",createdAt:Date.now()});
+  toast("Payout request submitted!","ok");
+  loadEarnings();
+};
+/* ============== MONETIZATION SYSTEM END ============== */
 </script>
+<!-- NEXLY: PAYOUT + RULES UPDATE -->
+<style>
+.nx-note{
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--card2);
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.7;
+  margin:12px 0;
+}
+.nx-rule{
+  margin:16px 0 7px;
+  font-size:15px;
+}
+.nx-list{
+  padding-left:20px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.85;
+}
+.nx-status{
+  margin-top:12px;
+  font-size:13px;
+  line-height:1.7;
+}
+.nx-success{color:var(--ok)}
+.nx-warning{color:#fbbf24}
+.nx-error{color:#f87171}
+.nx-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.nx-amount{
+  font-size:23px;
+  font-weight:700;
+  margin-top:5px;
+}
+</style>
+
+<script>
+(() => {
+  "use strict";
+
+  const el = id => document.getElementById(id);
+  const POLICY_VERSION = "nexly-draft-1";
+
+  /*
+    Backend is NOT configured by this update.
+    Real membership payments and payout transfers stay disabled.
+  */
+
+  if (el("page-payout")) return;
+
+  const app = document.querySelector("#appView .app");
+  const menu = document.querySelector("#sideMenu .menu-panel");
+
+  if (!app || !menu) {
+    alert("Payout update: app ya menu container nahi mila.");
+    return;
+  }
+
+  const styleMoney = value => {
+    const n = Number(value);
+    return "₹" + (Number.isFinite(n) ? n : 0).toLocaleString(
+      "en-IN",
+      {maximumFractionDigits:2}
+    );
+  };
+
+  const number = value => {
+    const n = Number(value);
+    return Number.isFinite(n) ? Math.max(0,n) : 0;
+  };
+
+  const today = () => {
+    const d = new Date();
+    return [
+      d.getFullYear(),
+      String(d.getMonth()+1).padStart(2,"0"),
+      String(d.getDate()).padStart(2,"0")
+    ].join("-");
+  };
+
+  function calculateAge(value) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value || "")) return null;
+
+    const [y,m,d] = value.split("-").map(Number);
+    const birth = new Date(y,m-1,d);
+    const now = new Date();
+
+    if (
+      birth.getFullYear() !== y ||
+      birth.getMonth() !== m-1 ||
+      birth.getDate() !== d ||
+      value > today() ||
+      y < now.getFullYear()-120
+    ) return null;
+
+    let age = now.getFullYear()-y;
+    if (
+      now.getMonth() < m-1 ||
+      (now.getMonth() === m-1 && now.getDate() < d)
+    ) age--;
+
+    return age;
+  }
+
+  function currentUid() {
+    const user = auth.currentUser;
+    if (!user) throw new Error("Pehle login karo.");
+    return user.uid;
+  }
+
+  function reportError(error) {
+    toast(error?.message || "Data load nahi ho paya.","err");
+  }
+
+  function message(id,text,type="") {
+    const box=el(id);
+    box.textContent=text;
+    box.className="nx-status " + type;
+  }
+
+  app.insertAdjacentHTML("beforeend", `
+    <section id="page-payout" class="page" hidden>
+      <div class="card">
+        <h2 style="font-size:18px">Payout Profile</h2>
+        <p class="muted" style="margin-top:8px">
+          DOB aur payout details yahan save karo.
+        </p>
+
+        <div class="nx-note">
+          Monetization aur payout ke liye 18+ hona zaroori hai.
+          DOB self-declared hai; ye identity verification nahi hai.
+          Kisi bhi field mein OTP, UPI PIN, password ya card CVV mat likho.
+        </div>
+
+        <label for="nxDob">Date of birth</label>
+        <input id="nxDob" class="input" type="date">
+
+        <div id="nxAgeStatus" class="nx-status"></div>
+
+        <label for="nxHolder">Account-holder ka poora naam</label>
+        <input id="nxHolder" class="input" maxlength="100"
+          autocomplete="name" placeholder="Account-holder name">
+
+        <label for="nxMethod">Payout method</label>
+        <select id="nxMethod" class="input">
+          <option value="upi">UPI</option>
+          <option value="bank">Bank account</option>
+        </select>
+
+        <div id="nxUpiBox">
+          <label for="nxUpi">UPI ID</label>
+          <input id="nxUpi" class="input" maxlength="100"
+            placeholder="yourname@bank"
+            autocapitalize="off" spellcheck="false">
+        </div>
+
+        <div id="nxBankBox" hidden>
+          <label for="nxBankName">Bank name</label>
+          <input id="nxBankName" class="input" maxlength="100">
+
+          <label for="nxAccount">Account number</label>
+          <input id="nxAccount" class="input" type="text"
+            inputmode="numeric" maxlength="24"
+            autocomplete="off">
+
+          <label for="nxAccountConfirm">Account number dobara likho</label>
+          <input id="nxAccountConfirm" class="input" type="text"
+            inputmode="numeric" maxlength="24"
+            autocomplete="off">
+
+          <label for="nxIfsc">IFSC</label>
+          <input id="nxIfsc" class="input" maxlength="11"
+            autocapitalize="characters" spellcheck="false">
+        </div>
+
+        <label style="display:flex;gap:8px;align-items:flex-start">
+          <input id="nxConsent" type="checkbox" style="margin-top:3px">
+          <span>
+            Meri DOB aur account details sahi hain. Ye account mera hai
+            ya ise use karne ka mujhe adhikar hai. Maine draft Rules padhe hain.
+          </span>
+        </label>
+
+        <button id="nxSaveProfile" class="btn btn-primary">
+          Save Payout Profile
+        </button>
+
+        <div id="nxProfileStatus" class="nx-status"></div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:16px">Earnings & Withdrawal</h3>
+
+        <div class="nx-grid" style="margin-top:14px">
+          <div>
+            <div class="muted">Recorded total earnings</div>
+            <div id="nxTotal" class="nx-amount">—</div>
+          </div>
+          <div>
+            <div class="muted">Recorded paid amount</div>
+            <div id="nxPaid" class="nx-amount">—</div>
+          </div>
+        </div>
+
+        <div class="nx-note">
+          Minimum payout proposal: ₹500.
+          Balance dikhna actual payment ka proof nahi hai.
+          Backend verification aur transfer integration abhi configured nahi hai.
+        </div>
+
+        <button class="btn btn-ghost" disabled
+          style="width:100%;opacity:.65">
+          Withdrawal not configured
+        </button>
+
+        <h3 style="font-size:14px;margin:18px 0 8px">
+          Existing Payout History
+        </h3>
+        <div id="nxHistory" class="muted">Page kholkar refresh karo.</div>
+      </div>
+    </section>
+
+    <section id="page-rules" class="page" hidden>
+      <div class="card">
+        <h2 style="font-size:18px">Nexly Rules</h2>
+
+        <div class="nx-note">
+          Draft policy — app owner ki review aur approval baaki hai.
+          Ye legal/privacy policy ka complete replacement nahi hai.
+          Payment, refund, support contact aur review timelines
+          publish karne se pehle finalize karna zaroori hai.
+        </div>
+
+        <h3 class="nx-rule">1. App aur account</h3>
+        <ul class="nx-list">
+          <li>Nexly par posts, stories, reels aur messages share kiye ja sakte hain.</li>
+          <li>Account details sahi rakho; kisi aur ki identity ka misuse mat karo.</li>
+          <li>Password, OTP aur payment PIN kisi ko mat do.</li>
+          <li>Impersonation, account theft, spam aur scams allowed nahi hain.</li>
+        </ul>
+
+        <h3 class="nx-rule">2. Content aur behaviour</h3>
+        <ul class="nx-list">
+          <li>Sirf apna content ya permission/licence wala content upload karo.</li>
+          <li>Harassment, threats, hate, sexual exploitation aur illegal content allowed nahi hai.</li>
+          <li>Kisi ki private details ya personal media bina permission share mat karo.</li>
+          <li>Fraudulent promotions, misleading earning promises aur fake engagement allowed nahi hain.</li>
+          <li>Suspicious content ko report karo. Reports ko fair review ki zaroorat hai.</li>
+        </ul>
+
+        <h3 class="nx-rule">3. Monetization eligibility</h3>
+        <ul class="nx-list">
+          <li>Creator ki age 18+ honi chahiye; DOB Payout page mein bhari jayegi.</li>
+          <li>Monetization application ke liye 1,000 followers aur last 30 days mein 10,000 valid views required hain.</li>
+          <li>Valid views ka trusted tracking abhi implement karna baaki hai.</li>
+          <li>500 followers Tips ki proposed eligibility hai; actual Tips payment feature abhi configured nahi hai.</li>
+          <li>Requirements complete hona automatic approval ya income guarantee nahi hai.</li>
+          <li>Application review, content compliance aur valid payout profile bhi required hain.</li>
+        </ul>
+
+        <h3 class="nx-rule">4. Creator membership</h3>
+        <ul class="nx-list">
+          <li>Proposed plan ₹99/month hai; real purchase abhi disabled hai.</li>
+          <li>Verified payment ke bina membership active nahi honi chahiye.</li>
+          <li>Membership se followers, views, approval ya earnings guarantee nahi hoti.</li>
+          <li>Renewal, cancellation, refund aur benefits ki final terms payment launch se pehle publish hongi.</li>
+        </ul>
+
+        <h3 class="nx-rule">5. Payout</h3>
+        <ul class="nx-list">
+          <li>Payout ke liye 18+, approved monetization aur valid payment details required hain.</li>
+          <li>Proposed minimum payout ₹500 hai.</li>
+          <li>Sirf verified, unpaid aur unreserved balance withdrawal ke liye use ho sakta hai.</li>
+          <li>Ek balance par duplicate payout requests allowed nahi hain.</li>
+          <li>Account-holder name aur UPI/bank details dhyan se bharo.</li>
+          <li>Request banana bank transfer complete hone ke barabar nahi hai.</li>
+          <li>Processing time, charges, tax handling aur verification requirements abhi finalize nahi hui hain.</li>
+          <li>Abhi real withdrawal disabled hai; koi payment completion promise nahi diya ja raha.</li>
+        </ul>
+
+        <h3 class="nx-rule">6. Privacy aur sensitive data</h3>
+        <ul class="nx-list">
+          <li>DOB aur payout details public profile par display nahi honi chahiye.</li>
+          <li>Inka access account owner aur authorized processing system tak restricted rehna chahiye.</li>
+          <li>OTP, UPI PIN, bank password aur card CVV kabhi collect nahi kiye jayenge.</li>
+          <li>Data retention, deletion request, grievance contact aur privacy notice launch se pehle define karna baaki hai.</li>
+        </ul>
+
+        <h3 class="nx-rule">7. Review aur enforcement</h3>
+        <ul class="nx-list">
+          <li>Policy violations par content ya monetization ko review kiya ja sakta hai.</li>
+          <li>Suspension, payout hold aur appeal ka documented process publish karna baaki hai.</li>
+          <li>Paid service shuru karne se pehle support contact aur final applicable terms publish karo.</li>
+        </ul>
+      </div>
+    </section>
+  `);
+
+  const logout = el("menuLogout");
+
+  function addMenu(id,text,icon,handler) {
+    const button=document.createElement("button");
+    button.id=id;
+    button.className="menu-item";
+
+    const i=document.createElement("i");
+    i.className="fa-solid "+icon;
+    button.append(i,document.createTextNode(" "+text));
+    button.onclick=handler;
+
+    if(logout) menu.insertBefore(button,logout);
+    else menu.appendChild(button);
+  }
+
+  addMenu("menuPayout","Payout","fa-wallet",()=>openPage("payout"));
+  addMenu("menuRules","Rules","fa-book",()=>openPage("rules"));
+
+  /*
+    Keep existing navigation, but hide our new pages whenever
+    the original app changes pages.
+  */
+  const originalShowPage=showPage;
+
+  showPage=function(page) {
+    el("page-payout").hidden=true;
+    el("page-rules").hidden=true;
+
+    if(page==="payout" || page==="rules") {
+      openPage(page);
+      return;
+    }
+
+    if(el("chatView")) el("chatView").hidden=true;
+    return originalShowPage(page);
+  };
+
+  function openPage(page) {
+    closeMenu();
+
+    document.querySelectorAll("#appView .page")
+      .forEach(p=>p.hidden=true);
+
+    if(el("chatView")) el("chatView").hidden=true;
+
+    document.querySelectorAll(".bottom-nav button")
+      .forEach(b=>b.classList.remove("active"));
+
+    el("page-"+page).hidden=false;
+    window.scrollTo(0,0);
+
+    if(page==="payout") loadPayout().catch(reportError);
+  }
+
+  /*
+    Public users/{uid} remains separate.
+    DOB and payout account details are stored in privatePayoutProfiles.
+    This path MUST have owner-only Firebase permissions.
+  */
+  async function getPrivateProfile() {
+    const snapshot=await db.ref(
+      "privatePayoutProfiles/"+currentUid()
+    ).get();
+
+    return snapshot.val() || null;
+  }
+
+  function showMethod() {
+    const bank=el("nxMethod").value==="bank";
+    el("nxBankBox").hidden=!bank;
+    el("nxUpiBox").hidden=bank;
+  }
+
+  function showAge() {
+    const age=calculateAge(el("nxDob").value);
+
+    if(age===null) {
+      message("nxAgeStatus","Sahi date of birth select karo.");
+    } else if(age<18) {
+      message(
+        "nxAgeStatus",
+        age+" years: monetization aur payout ke liye 18+ required.",
+        "nx-warning"
+      );
+    } else {
+      message(
+        "nxAgeStatus",
+        age+" years: self-declared 18+ check complete.",
+        "nx-success"
+      );
+    }
+  }
+
+  el("nxDob").max=today();
+  el("nxDob").onchange=showAge;
+  el("nxMethod").onchange=showMethod;
+
+  async function loadPayout() {
+    currentUid();
+
+    message("nxProfileStatus","Loading...");
+    el("nxConsent").checked=false;
+
+    const [profile,earnings,history]=await Promise.all([
+      getPrivateProfile(),
+      db.ref("earnings/"+currentUid()).get(),
+      db.ref("payouts/"+currentUid()).get()
+    ]);
+
+    el("nxDob").value=profile?.dob || "";
+    el("nxHolder").value=profile?.holderName || "";
+    el("nxMethod").value=profile?.method || "upi";
+    el("nxUpi").value=profile?.upi || "";
+    el("nxBankName").value=profile?.bankName || "";
+    el("nxAccount").value=profile?.accountNumber || "";
+    el("nxAccountConfirm").value="";
+    el("nxIfsc").value=profile?.ifsc || "";
+
+    showMethod();
+    showAge();
+
+    message(
+      "nxProfileStatus",
+      profile
+        ? "Saved profile mila. DOB self-declared hai, verified KYC nahi."
+        : "Pehle payout profile save karo."
+    );
+
+    const data=earnings.val() || {};
+    el("nxTotal").textContent=styleMoney(number(data.total));
+    el("nxPaid").textContent=styleMoney(number(data.paid));
+
+    const box=el("nxHistory");
+    box.replaceChildren();
+
+    const list=Object.values(history.val() || {})
+      .sort((a,b)=>number(b.createdAt)-number(a.createdAt));
+
+    if(!list.length) {
+      box.textContent="No payout requests yet.";
+      return;
+    }
+
+    for(const p of list) {
+      const row=document.createElement("div");
+      row.style.cssText=
+        "padding:10px 0;border-bottom:1px solid var(--line);line-height:1.7";
+      row.textContent=
+        styleMoney(p.amount)+" · "+
+        String(p.method || "unknown").toUpperCase()+" · "+
+        String(p.status || "pending");
+      box.appendChild(row);
+    }
+  }
+
+  el("nxSaveProfile").onclick=async()=>{
+    const button=el("nxSaveProfile");
+    button.disabled=true;
+
+    try {
+      const uid=currentUid();
+      const dob=el("nxDob").value;
+      const age=calculateAge(dob);
+      const holderName=el("nxHolder").value.trim();
+      const method=el("nxMethod").value;
+      const upi=el("nxUpi").value.trim();
+      const bankName=el("nxBankName").value.trim();
+      const accountNumber=el("nxAccount").value.trim();
+      const confirmAccount=el("nxAccountConfirm").value.trim();
+      const ifsc=el("nxIfsc").value.trim().toUpperCase();
+
+      if(age===null) throw new Error("Valid DOB select karo.");
+      if(age<18) throw new Error("Payout profile ke liye 18+ required.");
+      if(holderName.length<2) throw new Error("Account-holder name bharo.");
+      if(!el("nxConsent").checked)
+        throw new Error("Details confirm karke checkbox tick karo.");
+
+      if(method==="upi") {
+        if(!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+$/.test(upi))
+          throw new Error("UPI ID ka format check karo.");
+      } else {
+        if(!bankName) throw new Error("Bank name bharo.");
+        if(!/^\d{6,24}$/.test(accountNumber))
+          throw new Error("Account number ka format check karo.");
+        if(accountNumber!==confirmAccount)
+          throw new Error("Dono account numbers match nahi hain.");
+        if(!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc))
+          throw new Error("IFSC ka format check karo.");
+      }
+
+      await db.ref("privatePayoutProfiles/"+uid).set({
+        dob,
+        holderName,
+        method,
+        upi:method==="upi" ? upi : "",
+        bankName:method==="bank" ? bankName : "",
+        accountNumber:method==="bank" ? accountNumber : "",
+        ifsc:method==="bank" ? ifsc : "",
+        policyVersion:POLICY_VERSION,
+        consentAt:firebase.database.ServerValue.TIMESTAMP,
+        updatedAt:firebase.database.ServerValue.TIMESTAMP
+      });
+
+      message(
+        "nxProfileStatus",
+        "Profile saved. Account ownership aur DOB verification pending; real withdrawal disabled hai.",
+        "nx-success"
+      );
+
+      toast("Payout profile saved.","ok");
+    } catch(error) {
+      message("nxProfileStatus",error.message,"nx-error");
+    } finally {
+      button.disabled=false;
+    }
+  };
+
+  /*
+    Age moves out of Monetization UI.
+    Existing application payout fields move to Payout page.
+  */
+  if(el("reqAge")) el("reqAge").remove();
+
+  const applyBox=el("monetizeApply");
+  if(applyBox) {
+    applyBox.innerHTML=`
+      <div class="nx-note">
+        DOB aur payment details ab Menu → Payout mein save karo.
+        Application ke liye complete 18+ payout profile required hai.
+      </div>
+      <button id="nxOpenPayout" class="btn btn-ghost"
+        style="width:100%">Open Payout Profile</button>
+
+      <label style="display:flex;gap:8px;align-items:flex-start">
+        <input id="monetizeAgree" type="checkbox" style="margin-top:3px">
+        <span>Maine Rules padhe hain aur mera content original hai.</span>
+      </label>
+
+      <button id="monetizeApplyBtn" class="btn btn-primary">
+        Apply for Monetization
+      </button>
+    `;
+
+    el("nxOpenPayout").onclick=()=>openPage("payout");
+  }
+
+  if(el("payoutBtn")) {
+    el("payoutBtn").textContent="Open Payout Page";
+    el("payoutBtn").onclick=()=>openPage("payout");
+  }
+
+  /*
+    Block the previous fake "buy membership" implementation.
+  */
+  if(el("buyMembershipBtn")) {
+    el("buyMembershipBtn").textContent="Payment not configured";
+    el("buyMembershipBtn").onclick=()=>{
+      toast("Verified membership payment backend abhi configured nahi hai.","err");
+    };
+  }
+
+  async function loadEligibility() {
+    const uid=currentUid();
+
+    const [user,membership,application,profile]=await Promise.all([
+      db.ref("users/"+uid).get(),
+      db.ref("memberships/"+uid).get(),
+      db.ref("monetization/"+uid).get(),
+      getPrivateProfile()
+    ]);
+
+    const u=user.val() || {};
+    const member=membership.val() || {};
+    const appData=application.val() || null;
+
+    const followers=number(u.followersCount);
+    const views=number(u.views30);
+
+    /*
+      Legacy active:true alone is NOT treated as verified payment.
+      These fields must be issued by trusted backend/admin only.
+    */
+    const validMembership=
+      member.active===true &&
+      member.paymentVerified===true &&
+      number(member.expiresAt)>Date.now();
+
+    const age=calculateAge(profile?.dob || "");
+
+    return {
+      followers,views,validMembership,profile,appData,
+      adult:age!==null && age>=18
+    };
+  }
+
+  loadMonetization=async function() {
+    try {
+      if(el("monetizeDashboard")) el("monetizeDashboard").hidden=true;
+      if(el("monetizeApply")) el("monetizeApply").hidden=true;
+
+      el("monetizeStatus").textContent="Loading eligibility...";
+
+      const state=await loadEligibility();
+
+      el("reqFollowersCount").textContent=
+        state.followers.toLocaleString("en-IN")+" / 1,000";
+
+      el("followersBar").style.width=
+        Math.min(100,state.followers/1000*100)+"%";
+
+      el("followersBar").classList.toggle(
+        "done",state.followers>=1000
+      );
+
+      el("reqViewsCount").textContent=
+        state.views.toLocaleString("en-IN")+" / 10,000";
+
+      el("viewsBar").style.width=
+        Math.min(100,state.views/10000*100)+"%";
+
+      el("viewsBar").classList.toggle(
+        "done",state.views>=10000
+      );
+
+      el("reqTips").textContent=
+        (state.followers>=500 ? "✓ " : "○ ")+
+        state.followers+"/500 followers for Tips (payments not configured)";
+
+      el("reqMember").textContent=state.validMembership
+        ? "✓ Verified membership active"
+        : "○ Verified ₹99/month membership required";
+
+      el("membershipBox").hidden=state.validMembership;
+
+      const status=state.appData?.status || "not_applied";
+
+      const labels={
+        not_applied:"Not applied",
+        pending:"Application pending review",
+        approved:"Application approved",
+        rejected:"Application rejected"
+      };
+
+      el("monetizeStatus").textContent=
+        "Status: "+(labels[status] || status);
+
+      if(status==="rejected" && state.appData?.reason) {
+        el("monetizeStatus").append(
+          document.createTextNode(" — "+state.appData.reason)
+        );
+      }
+
+      if(!state.adult) {
+        el("monetizeStatus").append(
+          document.createTextNode(
+            " | Menu → Payout mein 18+ DOB aur payout profile complete karo."
+          )
+        );
+      }
+
+      if(status==="approved") {
+        el("monetizeDashboard").hidden=false;
+        await loadEarnings();
+      } else {
+        el("monetizeApply").hidden=false;
+        el("monetizeApplyBtn").disabled=
+          status==="pending" ||
+          !state.adult ||
+          !state.validMembership ||
+          state.followers<1000 ||
+          state.views<10000;
+      }
+    } catch(error) {
+      el("monetizeStatus").textContent=
+        "Load failed: "+(error.message || "Unknown error");
+    }
+  };
+
+  /*
+    Application writes only a review request.
+    Account/DOB details remain in the private payout profile.
+    Approval must NEVER be writable by the user.
+  */
+  if(el("monetizeApplyBtn")) {
+    el("monetizeApplyBtn").onclick=async()=>{
+      const button=el("monetizeApplyBtn");
+      button.disabled=true;
+
+      try {
+        const state=await loadEligibility();
+
+        if(!state.adult)
+          throw new Error("Payout page mein valid 18+ DOB save karo.");
+        if(!state.validMembership)
+          throw new Error("Verified active membership required.");
+        if(state.followers<1000 || state.views<10000)
+          throw new Error("Followers/views requirements complete nahi hain.");
+        if(state.appData?.status==="pending")
+          throw new Error("Application already pending hai.");
+        if(state.appData?.status==="approved")
+          throw new Error("Application already approved hai.");
+        if(!el("monetizeAgree").checked)
+          throw new Error("Rules accept karo.");
+
+        await db.ref("monetization/"+currentUid()).set({
+          uid:currentUid(),
+          status:"pending",
+          payoutProfilePath:"privatePayoutProfiles/"+currentUid(),
+          policyVersion:POLICY_VERSION,
+          appliedAt:firebase.database.ServerValue.TIMESTAMP
+        });
+
+        toast("Application review ke liye submitted.","ok");
+      } catch(error) {
+        reportError(error);
+      } finally {
+        await loadMonetization();
+      }
+    };
+  }
+
+  /*
+    Remove the inline bank/UPI copy from any leftover old UI.
+    Existing public age fields are not used or modified.
+  */
+  const oldPolicy=el("page-monetize")?.querySelectorAll(".card");
+  if(oldPolicy && oldPolicy.length) {
+    const last=oldPolicy[oldPolicy.length-1];
+    if(last.textContent.includes("Monetization Policy")) {
+      const p=last.querySelector("p");
+      if(p) p.textContent=
+        "18+ eligibility DOB Payout page mein bhari jayegi. "+
+        "Monetization ke liye 1,000 followers, 30 days mein 10,000 valid views "+
+        "aur verified active membership required hain. "+
+        "Poore draft rules Menu → Rules mein dekho. "+
+        "Real payments aur withdrawals abhi configured nahi hain.";
+    }
+  }
+
+})();
+</script>
+<!-- END NEXLY UPDATE -->
 </body>
 </html>
