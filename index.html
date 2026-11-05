@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <style>
 :root{--bg:#0a0a0b;--card:#151517;--card2:#1d1d20;--line:#2a2a2e;--red:#e11d2e;--red2:#ff3b4e;--text:#f5f5f6;--muted:#9a9aa2;--ok:#22c55e}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -1907,6 +1907,218 @@ $("payoutBtn").onclick=async()=>{
 
 })();
 </script>
-<!-- END NEXLY UPDATE -->
+<!-- END NEXLY UPDATE --><!-- NEXLY CAMERA / GALLERY COMPOSER FIX -->
+<script>
+(() => {
+  "use strict";
+
+  const E=id=>document.getElementById(id);
+
+  let openingCamera=false;
+
+  function notify(message){
+    if(typeof toast==="function") toast(message,"err");
+    else alert(message);
+  }
+
+  function putFile(input,file){
+    const transfer=new DataTransfer();
+    transfer.items.add(file);
+    input.files=transfer.files;
+    input.dispatchEvent(new Event("change",{bubbles:true}));
+  }
+
+  function moveToComposer(file,type,filter="none"){
+    if(!file) return;
+
+    const isImage=file.type.startsWith("image/");
+    const isVideo=file.type.startsWith("video/");
+
+    if(!isImage && !isVideo){
+      notify("Sirf photo ya video select karo.");
+      return;
+    }
+
+    /*
+      Existing Story viewer supports photos only.
+      Existing Reels feed supports video posts only.
+    */
+    if(type==="story" && !isImage){
+      notify("Abhi Story ke liye photo select karo. Video Story support add nahi hua.");
+      return;
+    }
+
+    if(type==="reel" && !isVideo){
+      notify("Reel ke liye video select karo. Photo ko Reel nahi bana sakte.");
+      return;
+    }
+
+    try{
+      closeCamera();
+
+      E("storyViewer").hidden=true;
+      showPage("create");
+
+      let targetCard;
+
+      if(type==="story"){
+        storyFilter=filter;
+        putFile(E("storyFile"),file);
+
+        E("storyFile").dispatchEvent(
+          new Event("change",{bubbles:true})
+        );
+
+        E("addStoryBtn").textContent="Upload Story";
+        targetCard=E("addStoryBtn").closest(".card");
+      }else{
+        selectedFilter=filter;
+        putFile(E("postMediaFile"),file);
+
+        E("createPostBtn").textContent=
+          type==="reel" ? "Publish Reel" : "Publish Post";
+
+        targetCard=E("createPostBtn").closest(".card");
+      }
+
+      requestAnimationFrame(()=>{
+        targetCard?.scrollIntoView({
+          behavior:"smooth",
+          block:"start"
+        });
+      });
+
+      toast(
+        type==="story"
+          ? "Caption likho aur Upload Story dabao."
+          : "Caption likho, policy tick karo aur Publish dabao.",
+        "ok"
+      );
+    }catch(error){
+      notify(
+        "Composer nahi khul paya: "+
+        (error.message || "Unknown error")
+      );
+    }
+  }
+
+  /*
+    Replace gallery selection.
+    Preserve the actual File instead of just showing its URL.
+  */
+  E("galleryInput").onchange=event=>{
+    const file=event.target.files?.[0];
+    if(!file) return;
+
+    moveToComposer(file,uploadType,cameraFilter);
+    event.target.value="";
+  };
+
+  E("galleryOpen").onclick=()=>{
+    const input=E("galleryInput");
+
+    input.accept=
+      uploadType==="reel" ? "video/*" :
+      uploadType==="story" ? "image/*" :
+      "image/*,video/*";
+
+    input.value="";
+    input.click();
+  };
+
+  /*
+    Existing camera capture creates a photo, not a recording.
+  */
+  E("captureBtn").onclick=()=>{
+    if(uploadType==="reel"){
+      notify(
+        "Abhi camera photo capture karta hai, video record nahi. "+
+        "Reel ke liye Gallery se video select karo."
+      );
+      return;
+    }
+
+    const video=E("cameraVideo");
+
+    if(!video.videoWidth || !video.videoHeight){
+      notify("Camera ready nahi hai. Gallery se media select kar sakte ho.");
+      return;
+    }
+
+    const selectedType=uploadType;
+    const canvas=document.createElement("canvas");
+    canvas.width=video.videoWidth;
+    canvas.height=video.videoHeight;
+
+    const context=canvas.getContext("2d");
+
+    if(!context){
+      notify("Camera photo process nahi ho paayi.");
+      return;
+    }
+
+    context.filter=cameraFilter || "none";
+    context.drawImage(video,0,0,canvas.width,canvas.height);
+
+    canvas.toBlob(blob=>{
+      if(!blob){
+        notify("Photo create nahi ho paayi.");
+        return;
+      }
+
+      const file=new File(
+        [blob],
+        "nexly-camera-"+Date.now()+".jpg",
+        {type:"image/jpeg"}
+      );
+
+      /*
+        Camera filter is already baked into captured pixels.
+        Do not apply it a second time.
+      */
+      moveToComposer(file,selectedType,"none");
+    },"image/jpeg",0.9);
+  };
+
+  /*
+    Replace automatic gallery opening on camera permission failure.
+    Let the user explicitly tap Gallery instead.
+  */
+  openCamera=async function(){
+    if(openingCamera) return;
+
+    openingCamera=true;
+    E("cameraModal").hidden=false;
+
+    try{
+      cameraStream?.getTracks().forEach(track=>track.stop());
+      cameraStream=null;
+
+      if(!navigator.mediaDevices?.getUserMedia){
+        throw new Error("Camera is browser mein available nahi.");
+      }
+
+      const stream=await navigator.mediaDevices.getUserMedia({
+        video:{facingMode:"environment"},
+        audio:false
+      });
+
+      if(E("cameraModal").hidden){
+        stream.getTracks().forEach(track=>track.stop());
+        return;
+      }
+
+      cameraStream=stream;
+      E("cameraVideo").srcObject=stream;
+    }catch(error){
+      notify("Camera nahi khula. Neeche Gallery button se media select karo.");
+    }finally{
+      openingCamera=false;
+    }
+  };
+
+})();
+</script>
+<!-- END COMPOSER FIX -->
 </body>
 </html>
